@@ -12,16 +12,16 @@
             container.append(menuContainer);
             function renderChildren(items, parent) {
                 $.each(items, function () {
-                    var li = $("<li menuId='" + this.menus.id + "'></li>");
-                    li.append("<a href='" + this.menus.uri + "'>" + this.menus.displayName + "</a>");
-                    if (this.menus.uri === null || this.menus.uri.length <= 1)
+                    var li = $("<li menuId='" + this.id + "'></li>");
+                    li.append("<a href='" + this.uri + "'>" + this.displayName + "</a>");
+                    if (this.uri === null || this.uri.length <= 1)
                         li.children("a").last().click(function () { return false; });
 
-                    if (this.menus.children && this.menus.children.length > 0) {
+                    if (this.children && this.children.length > 0) {
                         li.append('<span class="dropRight"></span>');
                         var ul = $("<ul></ul>");
                         li.append(ul);
-                        renderChildren(this.menus.children, ul);
+                        renderChildren(this.children, ul);
                     }
                     parent.append(li);
                 });

@@ -22,7 +22,7 @@ namespace LightData.CMS.Controllers
         public ExternalActionResult GetMenus()
         {
             using (var rep = new Repository())
-                return rep.Get<Menus>().LoadChildren().Execute().ToJsonResult();
+                return rep.Get<Menus>().LoadChildren().Where(x=> x.ParentId == null).Execute().ToJsonResult();
         }
 
         [HttpPost]

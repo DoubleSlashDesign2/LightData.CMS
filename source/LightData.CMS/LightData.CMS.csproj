@@ -131,12 +131,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Script\Dialog.js" />
     <Content Include="Content\Script\HorizontalMenu.js" />
     <Content Include="Content\Script\JqAutoFill.js" />
     <Content Include="Content\Script\jquery-3.2.1.min.js" />
     <Content Include="Content\Script\jquery-ui.min.js" />
     <Content Include="Content\Script\Plugins.js" />
     <Content Include="Content\Script\VerticalMenu.js" />
+    <Content Include="Content\Styles\Dialog.css" />
     <Content Include="Content\Styles\Errors.css" />
     <Content Include="Content\Styles\images\ui-icons_444444_256x240.png" />
     <Content Include="Content\Styles\images\ui-icons_555555_256x240.png" />

@@ -16,7 +16,7 @@ namespace LightData.CMS.Modules.Library
         public FileItem Icon { get; set; }
 
         [ForeignKey(typeof(Menus))]
-        public long ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         public List<Menus> Children { get; set; }
     }
