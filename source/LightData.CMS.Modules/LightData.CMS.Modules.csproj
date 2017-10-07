@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <AssemblyName>LightData.CMS.Modules</AssemblyName>
+    <RootNamespace>LightData.CMS.Modules</RootNamespace>
+    <PackageId>LightData.CMS.Modules</PackageId>
+    <Authors>LightData.CMS.Modules</Authors>
+    <Company>LightData.CMS.Modules</Company>
+    <Product>LightData.CMS.Modules</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fody" Version="2.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\LightDataTable.Core\source\LightDataTable.Core\Generic.LightDataTable.csproj" />
+  </ItemGroup>
+
+</Project>

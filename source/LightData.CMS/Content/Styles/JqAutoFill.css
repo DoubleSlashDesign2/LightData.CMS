@@ -1,0 +1,33 @@
+﻿.autoFill {
+    display: inline-block;
+    position: relative;
+}
+
+.autoFill > nav {
+    min-height: 34px;
+    border: 1px solid #CCC;
+    padding-left: 4px;
+    padding-top: 6px;
+    overflow: hidden;
+    background: white;
+    /*padding-bottom: 6px;*/
+}
+
+.autoFill span {
+    display: inline-block;
+    position: relative;
+    width: 98%;
+    min-height: 10px;
+    padding: 5px;
+    cursor: pointer;
+    color: #1d1c1c;
+    
+}
+    .autoFill span:not(:first-child) {
+        margin-top: 8px;
+    }
+
+    .autoFill span.selected {
+        background: #2199e0;
+        color: white;
+    }

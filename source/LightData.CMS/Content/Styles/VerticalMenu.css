@@ -1,0 +1,62 @@
+﻿.tableTree {
+    width: 500px;
+    min-height: 200px;
+    border: 1px solid #CCC;
+    display: block;
+    margin: auto;
+    position: relative;
+    background: #FFF;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+    .tableTree h2 {
+        width: 100%;
+        padding: 10px;
+        border-bottom: 1px solid #CCC;
+        font-weight: bold;
+        background: #337ab7;
+        color: white;
+    }
+
+    .tableTree ul {
+        width: 100%;
+        list-style: none;
+    }
+
+    .tableTree > ul > li {
+        margin-left: 8px;
+    }
+
+    .tableTree ul li > span.selected {
+        background: #72b8f3;
+        color: #ffffff;
+    }
+
+    .tableTree ul li ul li > span > .text {
+        padding-left: 8px;
+    }
+
+    .tableTree ul li > span {
+        display: inline-block;
+        width: 94%;
+        height: 100%;
+        padding: 5px;
+        /*padding-left: 6px;*/
+        margin-left: 6px;
+    }
+
+
+    .tableTree ul li {
+        width: 100%;
+        min-height: 20px;
+        cursor: pointer;
+    }
+
+        .tableTree ul li > .arrow-up, .tableTree ul li > .arrow-down {
+            position: relative;
+            left: -5px;
+            top: 14px;
+            cursor: pointer;
+        }
