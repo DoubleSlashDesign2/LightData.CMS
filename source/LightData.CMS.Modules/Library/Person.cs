@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Generic.LightDataTable.Library;
+using EntityWorker.Core.Object.Library;
+
 
 namespace LightData.CMS.Modules.Library
 {

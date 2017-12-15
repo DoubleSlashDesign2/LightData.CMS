@@ -48,10 +48,11 @@ namespace LightData.Auth.Helper
             }
             if (Data != null)
             {
+             
                 var camelCaseFormatter = new JsonSerializerSettings();
                 camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 response.Write(JsonConvert.SerializeObject(Data, Formatting.Indented, camelCaseFormatter));
-             
+
             }
         }
     }

@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/_SharedLayout.cshtml";
+}
+<nav class="articles"></nav>
+<script>
+    $(".articles").articles({
+        getUri: '@Url.Action("Get", "Article")',
+        header: "Manage Articles",
+        autoFillDataUrl: '@Url.Action("Get", "Article")',
+        saveUri: '@Url.Action("Save", "Article")',
+        deleteUri: '@Url.Action("Delete", "Article")',
+        autoFillMenusDataUrl: '@Url.Action("GetAutoFillData", "Menus")',
+        themeUrl: '@System.Configuration.ConfigurationManager.AppSettings["ThemeUrl"]'
+    });
+</script>
+

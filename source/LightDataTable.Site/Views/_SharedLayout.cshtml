@@ -1,0 +1,59 @@
+﻿@using LightDataTable.Site.Helpers;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/bundles/css")
+    @Scripts.Render("~/bundles/jquery")
+</head>
+<body>
+    <div id="siteContainer">
+        <div id="cssmenu">
+            @Html.Tag(LightData.CMS.Modules.Helper.EnumHelper.Tags.TopMenu)
+        </div>
+        <div id="centerContent">
+            @RenderBody()
+        </div>
+        @Html.Tag(LightData.CMS.Modules.Helper.EnumHelper.Tags.Footer)
+    </div>
+
+    <script>
+                                        //$(document).ready(function () {
+                                        //    $("tag").each(function () {
+                                        //        var type = $(this).attr("type");
+                                        //        var div = undefined;
+                                        //        switch (type) {
+                                        //            case "Slider":
+                                        //                div = $("<slider></slider>");
+                                        //                break;
+
+                                        //            case "HtmlContent":
+                                        //                div = $("<textarea></textarea>");
+                                        //                div.val($(this).html());
+                                        //                div.css({ width: "100%", height: "100%" });
+                                        //                break;
+
+                                        //            case "TopMenu":
+                                        //                div = $("<topmenu></topmenu>");
+                                        //                break;
+
+                                        //            case "Menus":
+                                        //                div = $("<menus></menus>");
+                                        //                break;
+                                        //        }
+
+                                        //        div.attr("class", $(this).attr("class"));
+                                        //        $(this).replaceWith(div);
+
+                                        //        if (type == "HtmlContent")
+                                        //            div.htmlarea();
+                                        //    });
+                                        //});
+                                            // ----------------------------- Editor ------------------------------
+
+
+
+    </script>
+</body>
+</html>

@@ -3,7 +3,6 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using LightData.Auth.Settings;
-using Generic.LightDataTable;
 using LightData.CMS.Modules.Library;
 using LightData.CMS.Modules.Repository;
 using System.Web.Http;

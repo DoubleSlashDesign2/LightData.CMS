@@ -1,14 +1,13 @@
 ﻿.tableTree {
-    width: 400px;
+    width: 200px;
     min-height: 200px;
     border: 1px solid #CCC;
     display: block;
     margin: auto;
     position: relative;
     background: #FFF;
-    border-radius: 10px;
     overflow: hidden;
-    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
     .tableTree h2 {
@@ -25,26 +24,53 @@
         list-style: none;
     }
 
-    .tableTree > ul > li {
-        margin-left: 8px;
+    .tableTree li li {
+        margin: 0px 0px 0px 16px;
     }
 
-    .tableTree ul li > span.selected {
-        background: #72b8f3;
-        color: #ffffff;
-    }
+            .tableTree ul li > span .text.selected {
+                background: #72b8f3;
+                color: #ffffff;
+                background: linear-gradient(to right, #72b8f3 100%, transparent 100%);
+            }
 
-    .tableTree ul li ul li > span > .text {
-        padding-left: 8px;
-    }
+        .tableTree ul.subItem li > span {
+            position: relative;
+            left: 10px;
+        }
 
-    .tableTree ul li > span {
+            .tableTree ul.subItem li > span .edit {
+                position: relative;
+                left: -10px;
+            }
+
+        .tableTree ul.subItem li > .arrow-down, .subItem li > .arrow-up {
+            left: 10px;
+        }
+
+        .tableTree ul li > span {
+            display: inline-block;
+            width: 86%;
+            height: 100%;
+            padding-left: 3px;
+            margin-left: 0px;
+            font-size: 13px;
+            color: #4e4d4d;
+        }
+
+    .tableTree > ul > li > span .text {
         display: inline-block;
-        width: 94%;
-        height: 100%;
-        padding: 5px;
-        /*padding-left: 6px;*/
-        margin-left: 6px;
+        width: 99%;
+        padding: 2px;
+        border-radius: 2px;
+    }
+
+
+    .tableTree ul li > span .text {
+        display: inline-block;
+        width: 99%;
+        padding: 2px;
+        border-radius: 2px;
     }
 
 
@@ -54,9 +80,15 @@
         cursor: pointer;
     }
 
+
         .tableTree ul li > .arrow-up, .tableTree ul li > .arrow-down {
             position: relative;
-            left: -5px;
-            top: 14px;
+            margin-left: 1px;
+            margin-top: 5px;
             cursor: pointer;
+            float: left;
+            width: 0;
+            height: 0;
+            display: inline-block;
         }
+

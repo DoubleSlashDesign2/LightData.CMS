@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
-using Generic.LightDataTable;
+using EntityWorker.Core.Helper;
+using LightData.Auth.Controllers;
 using LightData.Auth.Helper;
+using LightData.CMS.Controllers.Base;
 using LightData.CMS.Modules.Library;
-using LightData.CMS.Modules.Repository;
 
 namespace LightData.CMS.Controllers
 {
-    public class MenusController : Controller
+    public class MenusController : BaseController
     {
         // GET: Menus
         public ActionResult Index()
@@ -19,21 +19,37 @@ namespace LightData.CMS.Controllers
         }
 
         [HttpPost]
-        public ExternalActionResult GetMenus()
+        public async Task<ExternalActionResult> GetMenus()
         {
-            using (var rep = new Repository())
-                return rep.Get<Menus>().LoadChildren().Where(x=> x.ParentId == null).Execute().ToJsonResult();
+            var menus = await Repository.Get<Menus>().LoadChildren().Where(x => x.ParentId == null).ExecuteAsync();
+            return await menus.ToJsonResultAsync();
         }
 
         [HttpPost]
-        public ExternalActionResult GetAutoFillData(string value)
+        public async Task<ExternalActionResult> GetAutoFillData(string value)
         {
-            using (var rep = new Repository())
-            {
-                return rep.Get<Menus>().LoadChildren()
+            var menus = new List<Menus>();
+            var id = value.ConvertValue<long?>();
+            if (id.HasValue)
+                menus = await Repository.Get<Menus>().Where(x => x.Id == id).ExecuteAsync();
+            else
+                menus = await Repository.Get<Menus>().LoadChildren()
                     .Where(x => x.DisplayName.Contains(value) || x.Children.Any(a => a.DisplayName.Contains(value)))
-                    .Execute().ToJsonResult();
-            }
+                    .ExecuteAsync();
+            return await menus.ToJsonResultAsync();
+
+        }
+
+        [HttpPost]
+        public void Save(Menus item)
+        {
+            Repository.Save(item);
+        }
+
+        [HttpPost]
+        public void Delete(Menus item)
+        {
+            Repository.Delete(item);
         }
 
     }

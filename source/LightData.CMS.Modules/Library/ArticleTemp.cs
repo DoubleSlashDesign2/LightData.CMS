@@ -1,4 +1,4 @@
-﻿using Generic.LightDataTable.Attributes;
+﻿using EntityWorker.Core.Attributes;
 
 namespace LightData.CMS.Modules.Library
 {

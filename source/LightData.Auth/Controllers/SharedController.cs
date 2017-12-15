@@ -9,6 +9,17 @@ namespace LightData.Auth.Controllers
     [Authorize]
     public class SharedController : Controller
     {
+
+        protected const int SearchResultValue = 20;
+        [AllowAnonymous]
+        public ActionResult Login()
+        {
+            if (HttpContext.User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
+            return View();
+        }
+
+
         [AllowAnonymous]
         [HttpPost]
         public ActionResult Login(string userName, string password, bool isPersistent = true)
@@ -24,6 +35,18 @@ namespace LightData.Auth.Controllers
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Login", "Account");
+        }
+
+        [HttpPost]
+        public void SetValue(string key, object value)
+        {
+            value.SessionSet(key);
+        }
+
+        [HttpPost]
+        public ExternalActionResult GetValue(string key)
+        {
+            return key.SessionGet().ToJsonResult();
         }
     }
 }

@@ -99,6 +99,8 @@
 
                 if ($(window).width() <= 768) {
                     cssmenu.find('ul').hide().removeClass('open');
+                    cssmenu.find(".menu-opened").removeClass("menu-opened");
+                    cssmenu.find(".submenu-opened").removeClass("submenu-opened");
                 }
             };
             resizeFix();

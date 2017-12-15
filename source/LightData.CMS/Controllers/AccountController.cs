@@ -5,11 +5,6 @@ namespace LightData.CMS.Controllers
 {
     public class AccountController : SharedController
     {
-        [AllowAnonymous]
-        public ActionResult Login()
-        {
-            return View();
-        }
-
+        //UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
     }
 }

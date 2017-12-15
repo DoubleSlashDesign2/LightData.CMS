@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 
 namespace LightData.CMS.Modules.Helper
 {
     public static class Methods
     {
+
         public static string Encode(string password)
         {
             var hash = System.Security.Cryptography.SHA1.Create();
@@ -25,6 +28,17 @@ namespace LightData.CMS.Modules.Helper
                     countries.Add(country);
             }
             return countries.OrderBy(p => p.EnglishName).ToList();
+        }
+
+        public static List<string> GetTheme()
+        {
+            var currentTheme = ConfigurationManager.AppSettings["Theme"];
+
+            var bin = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin");
+            var directory = Directory.GetDirectories(bin);
+            var themePath = directory.First(x => x.Contains("Theme"));
+
+            return Directory.GetFiles(Path.Combine(themePath, currentTheme), "*", SearchOption.AllDirectories).Select(x=> x.Substring(bin.Length -3)).ToList();
         }
     }
 }

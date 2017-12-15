@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Generic.LightDataTable;
-using Generic.LightDataTable.InterFace;
-using Generic.LightDataTable.Library;
+using EntityWorker.Core.InterFace;
+using EntityWorker.Core.Object.Library;
 using LightData.CMS.Modules.Library;
 using LightData.CMS.Modules.Helper;
 
@@ -10,7 +9,7 @@ namespace LightData.CMS.Modules.Migrations
 {
     public class MigrationStartUp : Migration
     {
-        public override void ExecuteMigration(ICustomRepository repository)
+        public override void ExecuteMigration(IRepository repository)
         {
             var countries = Methods.GetCountriesByIso3166()
                 .Select(culture => new Country()
@@ -69,6 +68,7 @@ namespace LightData.CMS.Modules.Migrations
 
             menus.ForEach(x => repository.Save(x));
             base.ExecuteMigration(repository);
+            repository.SaveChanges();
         }
     }
 }

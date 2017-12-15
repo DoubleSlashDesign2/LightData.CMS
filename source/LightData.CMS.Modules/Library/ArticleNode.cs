@@ -1,5 +1,5 @@
-﻿using Generic.LightDataTable.Attributes;
-using Generic.LightDataTable.Library;
+﻿using EntityWorker.Core.Attributes;
+using EntityWorker.Core.Object.Library;
 
 namespace LightData.CMS.Modules.Library
 {
@@ -9,7 +9,7 @@ namespace LightData.CMS.Modules.Library
 
         public string PageHeader { get; set; }
 
-        [Base64String]
+        [ToBase64String]
         public string Content { get; set; }
 
         public string Tags { get; set; }

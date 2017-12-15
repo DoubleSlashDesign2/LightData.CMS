@@ -1,120 +1,163 @@
-﻿(function ($) {
-    jQuery.fn.center = function (isRelative) {
-        var item = this;
-        this.css("position", "absolute");
-        this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) +
-            $(window).scrollTop()) + "px");
-        this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) +
-            $(window).scrollLeft()) + "px");
+﻿
+function isNullOrEmpty(value) {
+    if (!value || value === "" || value === null)
+        return true;
+    return false;
+}
 
-        if (isRelative) {
-            $(window).resize(function () {
-                $(item).center();
-            });
-
-            $(window).scroll(function () {
-                $(item).center();
-            });
+function SetValue(key, value) {
+    $.LightDataAjax({
+        contentType: "application/json",
+        dataType: "json",
+        type: "POST",
+        async: true,
+        data: JSON.stringify({ key: key, value: value }),
+        url: globalSettings.setValue,
+        success: function (data) {
+            return data;
         }
-        return this;
+    });
+}
+
+
+function GetValue(key, onSuccess) {
+    $.LightDataAjax({
+        contentType: "application/json",
+        dataType: "json",
+        type: "POST",
+        async: onSuccess != undefined,
+        data: JSON.stringify({ key: key }),
+        url: globalSettings.getValue,
+        success: function (data) {
+            if (onSuccess)
+                onSuccess(data);
+            return data;
+
+        }
+    });
+}
+
+
+(function ($) {
+    $.fn.tableFix = function (options) {
+        var settings = $.extend({
+            scrollPos: 0
+        }, options);
+        var container = $(this);
+        var table = container.children("table").first();
+        var h2 = container.children("h2").first();
+        var staticThead = $("<table></table>").append(table.children("thead").first().clone());
+        table.children("thead").find("th").each(function (i, a) {
+            staticThead.find("th").eq(i).width($(this).width());
+        });
+        staticThead.addClass("static");
+        staticThead.css({ position: "absolute", top: 0 });
+        if (container.find(".static").length <= 0)
+            container.append(staticThead.hide());
+
+        container.scroll(function () {
+            var scrollPos = container.scrollTop();
+            if (scrollPos > 5) {
+                staticThead.css({ top: scrollPos });
+                staticThead.show();
+                var inputs = staticThead.find("input[type='checkbox']");
+                table.find("thead").find("input[type='checkbox']").each(function (i, a) {
+                    $.checkBox({ items: inputs.eq(i) }).prop($(this).is(":checked"));
+                });
+              
+
+            } else staticThead.hide();
+        });
+    };
+
+    $.fn.contextMenu = function (options) {
+        var settings = $.extend({
+            // [{ Text, id }]
+            dataSource: [],
+            click: function (item) { }
+        }, options);
+        var container = $(this);
+
+        container.attr("title", "Right click to edit");
+        function buildContext(e) {
+            $(".contextMenu").remove();
+            var context = $("<div class='contextMenu'></div>");
+            $.each(settings.dataSource,
+                function () {
+                    var item = this;
+                    context.append("<div class='contextItem'>" + this.text + "</div>");
+                    context.find("div").last().click(function () {
+                        if (settings.click)
+                            settings.click(item);
+                        $(".contextMenu").remove();
+                    });
+
+                });
+
+            context.css({
+                left: e.clientX,
+                top: e.clientY
+            });
+            $("body").append(context);
+            context.slideDown("slow");
+            context.width(Math.max.apply(Math,
+                $.map(context.find("div"),
+                    function (o) {
+                        return o.getBoundingClientRect().width;
+                    })));
+
+
+        }
+
+        $("body").mousedown(function (e) {
+            var target = $(e.target);
+            if (!(target.hasClass("contextItem") || target.hasClass("contextMenu")))
+                $(".contextMenu").remove();
+
+        });
+
+        container.bind("contextmenu", function (e) {
+            buildContext(e);
+            return false;
+        });
+
+        return container;
     }
 
 
+    jQuery.fn.center = function (isRelative, parant) {
+        if (!parant)
+            parant = $(window);
 
+        var item = this;
 
-    $.fn.menus = function (options) {
-        var settings = $.extend({
-            getUri: undefined,
-            saveUri: undefined,
-            deleteUri: undefined,
-            header: undefined
-        }, options);
+        this.css("position", "absolute");
 
-        var container = $(this);
-        container.addClass("tableTree");
-        container.append("<h2>" + settings.header + "</h2>");
-        container.render = function () {
+        this.css("top", Math.max(0, ((parant.height() - $(this).outerHeight()) / 2) +
+            parant.scrollTop()) + "px");
 
-            $.ajax({
-                contentType: "application/json",
-                dataType: "json",
-                type: "POST",
-                url: settings.getUri,
-                success: function (data) {
-                    function renderChildren(items, parent) {
-                        $.each(items, function () {
-                            var div = $("<li></li>");
-                            div.append("<div class='arrow-down'></div><span class='sp'><span class='text'>" + this.displayName + "</span> <a class='edit'><span></span> edit</a></span>");
-                            bindEdit(div.find(".edit").last(), this);
-                            if (this.children && this.children.length > 0) {
-                                var ul = $("<ul class='subItem'></ul>");
-                                ul.hide();
-                                div.append(ul);
-                                renderChildren(this.children, ul);
-                            } else div.find(".arrow-down").hide();
-                            parent.append(div);
-                        });
-                    }
-                    var ulContainer = $("<ul></ul>");
-                    container.append(ulContainer);
-                    $(data).each(function () {
-                        var div = $("<li></li>");
-                        div.append("<div class='arrow-down'></div><span class='sp'><span class='text'>" + this.displayName + "</span> <a class='edit'><span></span> edit</a></span>");
+        this.css("left", Math.max(0, ((parant.width() - $(this).outerWidth()) / 2) +
+            parant.scrollLeft()) + "px");
+        var timeOut = undefined;
+        if (isRelative) {
+            $(window).resize(function () {
+                if (timeOut)
+                    clearTimeout(timeOut);
+                timeOut = setTimeout(function () {
+                    $(item).center(isRelative, parant);
+                }, 50);
+            });
 
-                        bindEdit(div.find(".edit").last(), this);
-                        if (this.children && this.children.length > 0) {
-                            var ul = $("<ul class='subItem'></ul>");
-                            ul.hide();
-                            div.append(ul);
-                            renderChildren(this.children, ul);
-                        } else div.find(".arrow-down").hide();
-                        ulContainer.append(div);
-                    });
-                    container.find("li> span").mouseover(function (e) {
-                        if ($(e.target).hasClass("sp") || $(e.target).hasClass("text"))
-                            $(this).addClass("selected");
-                    }).mouseout(function () {
-                        $(this).removeClass("selected");
-                    });
-
-                    function folder() {
-                        container.find(".arrow-up, .arrow-down").click(function () {
-                            if ($(this).hasClass("arrow-up")) {
-                                $(this).parent().children("ul").hide();
-                                $(this).removeClass("arrow-up").addClass("arrow-down");
-                            } else {
-                                $(this).parent().children("ul").show();
-                                $(this).removeClass("arrow-down").addClass("arrow-up");
-                            }
-
-                        });
-                    }
-
-                    function bindEdit(li, item) {
-                        li.click(function () {
-                            var editContainer = $("<div class='inputContainer'></div>");
-                            editContainer.append("<label>Name:</label>");
-                            editContainer.append("<input type='text' class='txtname' value='" + item.displayName + "' />");
-                            editContainer.append("<label>Choose Parent:</label>");
-                            editContainer.append("<input type='text' class='txtparent' value='None' />");
-
-                            $(this).dialog({ content: editContainer, title: "test", onSave: function () { return true; } }).show();
-                            editContainer.find(".txtparent").autoFill({
-                                ajaxUrl: settings.autoFillDataUrl,
-                                textField: "displayName",
-                                valueField: "id"
-                            });
-                        });
-                    }
-
-                    folder();
-                }
-
+            $(window).scroll(function () {
+                if (timeOut)
+                    clearTimeout(timeOut);
+                timeOut = setTimeout(function () {
+                    $(item).center(isRelative, parant);
+                }, 50);
             });
         }
-        container.render();
-        //container.center()
-        return container;
+
+        return this;
     }
 
 }(jQuery));

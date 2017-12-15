@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using Generic.LightDataTable.Attributes;
-using Generic.LightDataTable.Library;
+using EntityWorker.Core.Attributes;
+using EntityWorker.Core.Object.Library;
 
 namespace LightData.CMS.Modules.Library
 {

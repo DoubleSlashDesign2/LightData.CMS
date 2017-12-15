@@ -4,12 +4,14 @@
     Layout = "~/Views/_SharedLayout.cshtml";
 }
 
-
-<nav class="menus"></nav>
+@*<nav class="menus"></nav>
 <script>
     $(".menus").menus({
         getUri: '@Url.Action("GetMenus", "Menus")',
         header: "Manage Menus",
-        autoFillDataUrl: '@Url.Action("GetAutoFillData", "Menus")'
+        autoFillDataUrl: '@Url.Action("GetAutoFillData", "Menus")',
+        saveUri: '@Url.Action("Save", "Menus")',
+        deleteUri: '@Url.Action("Delete", "Menus")'
     });
-</script>
+</script>*@
+

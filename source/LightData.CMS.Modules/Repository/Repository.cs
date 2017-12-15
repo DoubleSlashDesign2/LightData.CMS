@@ -1,9 +1,17 @@
-﻿using Generic.LightDataTable.Transaction;
+﻿using EntityWorker.Core.Transaction;
+using System.Configuration;
+using EntityWorker.Core.Helper;
 
 namespace LightData.CMS.Modules.Repository
 {
-    public class Repository : TransactionLiteData
+    public class Repository : Transaction
     {
-        public Repository() : base("Db-connection", true) { }
+        public Repository() : base(GetConnectionString(), true, DataBaseTypes.Mssql) { }
+
+        // get the full connection string from the web-config
+        public static string GetConnectionString()
+        {
+            return ConfigurationManager.ConnectionStrings["Db-connection"].ConnectionString;
+        }
     }
 }

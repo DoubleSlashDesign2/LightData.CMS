@@ -9,7 +9,9 @@
             param: undefined,
             onSelect: undefined,
             selectedValue: undefined,
-            selectedItem: undefined
+            selectedItem: undefined,
+            hideValues: [],
+            additionalValues: undefined
         }, options);
         $(this).addClass("autofillInput");
         var container = $("<div class='autoFill'></div>");
@@ -18,6 +20,17 @@
         var dataContainer = $("<nav class='autofilldataContainer'></nav>");
         dataContainer.hide();
         container.append(dataContainer);
+        container.append("<div class='arrowContainer'><div class='arrow'></div></div>");
+        setTimeout(function () {
+            //container.find("input").css({
+            //    width: (container.find("input").width() - container.find(".arrowContainer").width())
+            //});
+            var offset = container.parent()[0].getBoundingClientRect();
+            container.find(".arrowContainer").css({
+                left: offset.width - (16 * 2),
+                top: 6
+            });
+        }, 1);
 
         container.select = function (setValueOnly) {
             if (!settings.selectedItem) {
@@ -30,7 +43,7 @@
             if (!setValueOnly) {
                 if (settings.onSelect) {
                     settings.onSelect(settings);
-                 
+
                 }
                 container.find("input").trigger("change");
                 dataContainer.hide();
@@ -50,7 +63,8 @@
 
         }
 
-        container.render = function (data, isFocus) {
+        container.render = function (data, isFocus, setDataOnly) {
+
             if (!data)
                 return;
 
@@ -61,11 +75,13 @@
             });
 
             var value = container.find("input").val();
-            data = $.grep(data, function (a, i) { return ( isFocus || a[settings.textField] && a[settings.textField].toString().toLowerCase().indexOf(value.toLowerCase()) !== -1) && i <= 300 });
+            data = $.grep(data, function (a, i) { return (isFocus || (a[settings.textField] && a[settings.textField].toString().toLowerCase().indexOf(value.toLowerCase()) !== -1)) && i <= 300 });
             dataContainer.html("");
-
+            if (settings.additionalValues)
+                $.each(settings.additionalValues, function () { data.unshift(this)});
             $.each(data, function () {
                 var item = this;
+
                 function render(tItem) {
                     var li = $("<span></span>");
                     li.html(tItem[settings.textField]);
@@ -92,32 +108,33 @@
                     });
 
                     dataContainer.append(li);
-                    if (settings.childrenField && tItem[settings.childrenField] && tItem[settings.childrenField].length>0) {
-                        $(tItem[settings.childrenField]).each(function() {
+                    if (settings.childrenField && tItem[settings.childrenField] && tItem[settings.childrenField].length > 0) {
+                        $(tItem[settings.childrenField]).each(function () {
                             render(this);
                         });
                     }
 
                 }
-
-                render(item);
+                if (settings.hideValues.indexOf(item[settings.valueField]) === -1)
+                    render(item);
             });
 
-            if (dataContainer.find("span").length > 0) {
+            if (dataContainer.find("span").length > 0 && !setDataOnly) {
                 var offset = container.find("input")[0].getBoundingClientRect();
                 dataContainer.css({
                     top: offset.top + offset.height,
                     left: offset.left,
-                    "min-width": offset.width,
+                    "min-width": offset.width - container.find(".arrowContainer").outerWidth(true) -24,
                     position: "fixed"
                 });
-                dataContainer.show("slow");
+                dataContainer.show("fast");
                 if (isFocus)
                     container.find("input").select();
             } else dataContainer.hide();
         }
         var timeOut = undefined;
-        container.GetData = function (isFocus) {
+
+        container.GetData = function (isFocus, setDataOnly) {
             if (timeOut)
                 clearTimeout(timeOut);
             timeOut = setTimeout(function () {
@@ -129,6 +146,9 @@
                 if (!settings.param)
                     settings.param = {};
                 settings.param["value"] = !isFocus ? container.find("input").val() : "";
+                if (setDataOnly)
+                    settings.param["value"] = settings.selectedValue;
+
                 $.ajax({
                     contentType: "application/json",
                     dataType: "json",
@@ -136,7 +156,7 @@
                     url: settings.ajaxUrl,
                     data: JSON.stringify(settings.param),
                     success: function (data) {
-                        container.render(data, isFocus);
+                        container.render(data, isFocus, setDataOnly);
                     }
                 });
             }, 100);
@@ -154,6 +174,9 @@
 
             if (e.keyCode === 38)
                 return "Up";
+
+            if (e.keyCode === 8)
+                return "Clean";
 
             return false;
         }
@@ -220,6 +243,12 @@
 
                         return false;
 
+                    case "Clean":
+                        settings.selectedItem = undefined;
+                        settings.selectedValue = undefined;
+                        input.attr("selectedValue", "");
+                        container.GetData();
+                        break;
 
                     default:
                         container.GetData();
@@ -234,16 +263,26 @@
                 if (target.hasClass("autofillInput"))
                     return;
 
-                if (target.parent().hasClass("autoFill") || target.parent().hasClass("autofilldataContainer"))
+                if (target.hasClass("arrow") || target.hasClass("arrowContainer") || target.parent().hasClass("autoFill") || target.parent().hasClass("autofilldataContainer"))
                     return;
-                dataContainer.hide("slow");
+                dataContainer.hide("fast");
             });
 
-            input.focus(function() {
-                container.GetData(true);
+            input.focus(function () {
+                if (dataContainer.is(":hidden"))
+                    container.GetData(true);
             });
+
+            container.find(".arrowContainer").click(function () {
+                if (dataContainer.is(":hidden"))
+                    container.GetData(true);
+            });
+
+
         }
         container.bind();
+        if (settings.selectedValue)
+            container.GetData(true, true);
         return container;
 
     };
