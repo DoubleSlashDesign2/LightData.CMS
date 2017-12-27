@@ -30,15 +30,17 @@ namespace LightData.CMS.Modules.Helper
             return countries.OrderBy(p => p.EnglishName).ToList();
         }
 
-        public static List<string> GetTheme()
+        public static List<string> GetTheme(string exp = null)
         {
             var currentTheme = ConfigurationManager.AppSettings["Theme"];
-
             var bin = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "bin");
             var directory = Directory.GetDirectories(bin);
             var themePath = directory.First(x => x.Contains("Theme"));
 
-            return Directory.GetFiles(Path.Combine(themePath, currentTheme), "*", SearchOption.AllDirectories).Select(x=> x.Substring(bin.Length -3)).ToList();
+            var files = Directory.GetFiles(Path.Combine(themePath, currentTheme), "*", SearchOption.AllDirectories).ToList();
+            if (exp != null)
+                return files.FindAll(x => x.ToLower().EndsWith(exp));
+            return files;
         }
     }
 }

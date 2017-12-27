@@ -14,7 +14,7 @@
         $browser.mozilla = false;
         $browser.safari = false;
         $browser.version = 0;
-        
+
         if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
             $browser.msie = true;
             $browser.version = parseFloat(RegExp.$1);
@@ -84,14 +84,16 @@
                 var htmlarea = this.htmlarea = $("<div/>").append(iframe);
 
                 container.append(htmlarea).append(textarea.hide());
-
                 priv.initEditor.call(this, opts);
                 priv.attachEditorEvents.call(this);
 
                 // Fix total height to match TextArea
                 iframe.height(iframe.height() - toolbar.height());
                 toolbar.width(textarea.width());
-                
+                var css = $(".ExternalCss");
+                css.each(function () {
+                    elem.jhtmlareaObject.find("head").append($(this).clone());
+                });
 
                 if (opts.loaded) { opts.loaded.call(this); }
             }
@@ -103,7 +105,6 @@
         },
         execCommand: function (a, b, c) {
             this.iframe[0].contentWindow.focus();
-            
             if ($browser.msie === true && $browser.version >= 11) {
                 if (this.previousRange) {
                     var rng = this.previousRange;
@@ -112,7 +113,7 @@
                     sel.addRange(rng);
                 }
             }
-            
+
             this.editor.execCommand(a, b || false, c || null);
             this.updateTextArea();
         },
@@ -133,6 +134,9 @@
                 var elem = this.getRange().cloneContents();
                 return $("<p/>").append($(elem)).html();
             }
+        },
+        find: function (exp) {
+            return $(this.editor).find(exp);
         },
         getSelection: function () {
             if ($browser.msie === true && $browser.version < 11) {
@@ -170,14 +174,17 @@
             if ($browser.msie) {
                 r.pasteHTML(html);
             } else if ($browser.mozilla) {
-                r.deleteContents();
+                if (r.deleteContents)
+                    r.deleteContents();
                 r.insertNode($((html.indexOf("<") != 0) ? $("<span/>").append(html) : html)[0]);
             } else { // Safari
-                r.deleteContents();
+                if (r.deleteContents)
+                    r.deleteContents();
                 r.insertNode($(this.iframe[0].contentWindow.document.createElement("span")).append($((html.indexOf("<") != 0) ? "<span>" + html + "</span>" : html))[0]);
             }
             r.collapse(false);
-            r.select();
+            if (r.select)
+                r.select();
         },
         cut: function () {
             this.ec("cut");
@@ -196,7 +203,12 @@
             if ($browser.msie === true && !url) {
                 this.ec("insertImage", true);
             } else {
-                this.ec("insertImage", false, (url || prompt("Image URL:", "http://")));
+                if (!(typeof url === "string")) {
+                    var htmlImage = $('<a></a>').append($(url).clone()).html();
+                    this.pasteHTML(htmlImage);
+                } else {
+                    this.ec("insertImage", false, (url || prompt("Image URL:", "http://")));
+                }
             }
         },
         removeFormat: function () {
@@ -291,11 +303,30 @@
 
         showHTMLView: function () {
             this.updateTextArea();
-            this.textarea.show();
-            this.htmlarea.hide();
-            $("ul li:not(li:has(a.html))", this.toolbar).hide();
-            $("ul:not(:has(:visible))", this.toolbar).hide();
-            $("ul li a.html", this.toolbar).addClass("highlighted");
+            var item = this;
+            if (globalSettings && globalSettings.htmlFormater) {
+                $.ajax({
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    data: JSON.stringify({ html: encodeURIComponent(this.textarea.val()) }),
+                    url: globalSettings.htmlFormater,
+                    success: function (data) {
+                        $(item.textarea).val(data);
+                        item.textarea.show();
+                        item.htmlarea.hide();
+                        $("ul li:not(li:has(a.html))", item.toolbar).hide();
+                        $("ul:not(:has(:visible))", item.toolbar).hide();
+                        $("ul li a.html", item.toolbar).addClass("highlighted");
+                    }
+                });
+            } else {
+                this.textarea.show();
+                this.htmlarea.hide();
+                $("ul li:not(li:has(a.html))", this.toolbar).hide();
+                $("ul:not(:has(:visible))", this.toolbar).hide();
+                $("ul li a.html", this.toolbar).addClass("highlighted");
+            }
+
         },
         hideHTMLView: function () {
             this.updateHtmlArea();
@@ -317,24 +348,61 @@
 
         updateTextArea: function () {
             this.textarea.val(this.toHtmlString());
+            var tables = this.find("table");
+            var JHtml = this.editor.priv().toolbarButtons;
+            var $this = this;
+            if (tables.length > 0) {
+                tables.each(function () {
+                    var table = $(this)
+                    table.contextMenu({
+                        dataSource: [{ text: "Properties", item: table }, { text: "Drop", item: table }],
+                        click: function (item) {
+                            if (item.text == "Properties") {
+                                JHtml.table(undefined, item.item, $this);
+                            } else {
+                                item.item.remove();
+                            }
+                        }
+                    });
+                });
+            }
+
+
+            var images = this.find("img");
+            if (images.length > 0) {
+                images.each(function () {
+                    var image = $(this)
+                    image.contextMenu({
+                        dataSource: [{ text: "Properties", item: image }, { text: "Drop", item: image }],
+                        click: function (item) {
+                            if (item.text == "Properties") {
+                                $("body").files({
+                                    imageProperties: item.item
+                                });
+                            } else item.item.remove();
+                        }
+                    });
+                });
+            }
         },
         updateHtmlArea: function () {
             this.editor.body.innerHTML = this.textarea.val();
+
         }
     };
     jHtmlArea.fn.init.prototype = jHtmlArea.fn;
-
+    var priv = undefined;
     jHtmlArea.defaultOptions = {
         toolbar: [
-        ["html"], ["bold", "italic", "underline", "strikethrough", "|", "subscript", "superscript"],
-        ["increasefontsize", "decreasefontsize"],
-        ["orderedlist", "unorderedlist"],
-        ["indent", "outdent"],
-        ["justifyleft", "justifycenter", "justifyright"],
-        ["link", "unlink", "image", "horizontalrule"],
-        ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
-        ["cut", "copy", "paste"]
-    ],
+            ["html"], ["bold", "italic", "underline", "strikethrough", "|", "subscript", "superscript"],
+            ["increasefontsize", "decreasefontsize"],
+            ["orderedlist", "unorderedlist"],
+            ["indent", "outdent"],
+            ["justifyleft", "justifycenter", "justifyright"],
+            ["link", "unlink", "image", "horizontalrule"],
+            ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+            ["cut", "copy", "paste", "table"]
+        ],
         css: null,
         toolbarText: {
             bold: "Bold", italic: "Italic", underline: "Underline", strikethrough: "Strike-Through",
@@ -346,10 +414,10 @@
             link: "Insert Link", unlink: "Remove Link", image: "Insert Image",
             orderedlist: "Insert Ordered List", unorderedlist: "Insert Unordered List",
             subscript: "Subscript", superscript: "Superscript",
-            html: "Show/Hide HTML Source View"
+            html: "Show/Hide HTML Source View", table: "Manage Table Settings"
         }
     };
-    var priv = {
+    priv = {
         toolbarButtons: {
             strikethrough: "strikeThrough", orderedlist: "orderedList", unorderedlist: "unorderedList",
             horizontalrule: "insertHorizontalRule",
@@ -357,10 +425,238 @@
             increasefontsize: "increaseFontSize", decreasefontsize: "decreaseFontSize",
             html: function (btn) {
                 this.toggleHTMLView();
+            },
+            table: function (btn, tb, jHtml) {
+                var appendOnly = tb != undefined;
+                var jHtml = typeof jHtml == "undefined" ? this : jHtml;
+                var table = $("<table class='block'><tfoot><tr><td colspan='15'><input readyonly='readonly' /><span>x</span><input readyonly='readonly' /></td></tr></tfoot><tbody></tbody></table>");
+                var div = $("<table style='width:900px;'><tbody><tr><td style='width:35%;vertical-align: top;border-right: 1px solid #CCC;'><div class='inputContainer'></div></td><td style='width:65%;vertical-align: top;'><div class='inputContainer'></div></td></tr><tbody></table>");
+                var generatedTable = undefined;
+
+                function renderDemo(loaded) {
+                    div.find(".inputContainer:last").html("");
+                    var demoTable = appendOnly ? tb.clone() : $("<table class='" + div.find(".theme").val() + "'><thead></thead><tbody></tbody></table>");
+                    demoTable.attr("class", div.find(".theme").val());
+                    var totalTd = eval(table.find("input").last().val());
+                    var totalTr = eval(table.find("input").first().val());
+                    var createThead = div.find("td:first .inputContainer").find("input.chkHeader").is(":checked");
+                    var demoText = div.find("td:first .inputContainer").find("input.chkText").is(":checked");
+                    var float = div.find("td:first .inputContainer").find("input.float").val();
+                    for (var i = 1; i <= totalTr; i++) {
+                        var tr = $("<tr></tr>");
+                        if (appendOnly && tb.find("tbody tr").length >= i)
+                            tr = demoTable.find("tbody tr:nth-child(" + i + ")");
+                        for (var x = 1; x <= totalTd; x++) {
+                            if (tr.find("td:nth-child(" + x + ") ").length > 0)
+                                continue;
+                            tr.append("<td>" + (demoText ? "cell" + i + "_" + x : "&nbsp;") + "</td>");
+                        }
+                        if (demoTable.find("tbody tr:nth-child(" + i + ")").length <= 0)
+                            demoTable.find("tbody").append(tr);
+                    }
+                    if (createThead) {
+                        var tr = $("<tr></tr>");
+                        if (demoTable.find("thead tr").length > 0)
+                            tr = demoTable.find("thead tr").first();
+                        for (var x = 1; x <= totalTd; x++) {
+                            if (tr.find("th").length >= x)
+                                continue;
+                            tr.append("<th>" + (demoText ? "head" + x : "&nbsp;") + "</th>");
+                        }
+                        if (demoTable.find("thead tr").length <= 0)
+                            demoTable.find("thead").append(tr);
+                    } else
+                        demoTable.find("thead").remove();
+
+
+                    demoTable.css({ float: float });
+                    div.find(".inputContainer:last").append(demoTable);
+                    if (loaded || div.find("td:first .inputContainer").find(".height").val().length <= 1) {
+                        div.find("td:first .inputContainer").find(".width").val(demoTable.css("width"));
+                        div.find("td:first .inputContainer").find(".height").val(demoTable.css("height"));
+                    } else {
+                        demoTable.css("width", div.find("td:first .inputContainer").find(".width").val());
+                        demoTable.css("height", div.find("td:first .inputContainer").find(".height").val());
+                        div.find("td:first .inputContainer").find(".width").val(demoTable.css("width"));
+                        div.find("td:first .inputContainer").find(".height").val(demoTable.css("height"));
+                    }
+                    generatedTable = demoTable;
+                }
+
+
+                div.find("td:first .inputContainer").append("<label>Theme</label>");
+                div.find("td:first .inputContainer").append("<input class='theme' type='text' value='default' />");
+                var themes = [{
+                    text: "default",
+                    id: 0,
+                }, {
+                    text: "greenLight",
+                    id: 1
+                }, {
+                    text: "rwd-table",
+                    id: 2
+                },
+                {
+                    text: "blured-table",
+                    id: 3
+                }];
+
+                function readTable(demoTable) {
+                    div.find("td:first .inputContainer").find(".width").val(demoTable.css("width"));
+                    div.find("td:first .inputContainer").find(".height").val(demoTable.css("height"));
+                    if (demoTable.find("thead").length > 0)
+                        div.find("td:first .inputContainer").find("input.chkHeader").prop("checked", true);
+                    else div.find("td:first .inputContainer").find("input.chkHeader").prop("checked", false);
+
+                    if (demoTable.css("float") != "")
+                        div.find("td:first .inputContainer").find("input.float").val(demoTable.css("float"));
+                    div.find("td:first .inputContainer").find(".width").val(demoTable.css("width"));
+                    div.find("td:first .inputContainer").find(".height").val(demoTable.css("height"));
+                    table.find("input").last().val(demoTable.find("tbody tr:first td").length - 1);
+                    table.find("input").first().val(demoTable.find("tbody tr").length - 1);
+
+                    var css = demoTable.attr("class");
+                    if (css.indexOf("default") != -1)
+                        div.find("td:first .inputContainer").find(".theme").val("default");
+                    else if (css.indexOf("greenLight") != -1)
+                        div.find("td:first .inputContainer").find(".theme").val("greenLight");
+                    else if (css.indexOf("rwd-table") != -1)
+                        div.find("td:first .inputContainer").find(".theme").val("rwd-table");
+                    else if (css.indexOf("blured-table") != -1)
+                        div.find("td:first .inputContainer").find(".theme").val("blured-table");
+                    else {
+                        div.find("td:first .inputContainer").find(".theme").val(css);
+                        themes.push({
+                            text: css,
+                            id: 4
+                        });
+                    }
+                    renderDemo();
+                }
+
+                div.find("td:first .inputContainer").find("input.theme").autoFill({
+                    datasource: themes,
+                    textField: "text",
+                    idField: "id",
+                    onSelect: function () {
+                        renderDemo(true);
+                    }
+                });
+
+
+                div.find("td:first .inputContainer").append("<label>Float</label>");
+                div.find("td:first .inputContainer").append("<input class='float' type='text' value='none' />");
+                div.find("td:first .inputContainer").find(".float").autoFill({
+                    datasource: [{
+                        text: "none",
+                        id: "none",
+                    }, {
+                        text: "left",
+                        id: "left"
+                    }, {
+                        text: "right",
+                        id: "right"
+                    },
+                    {
+                        text: "inherit",
+                        id: "inherit"
+                    },
+                    {
+                        text: "initial",
+                        id: "initial"
+                    },
+                    {
+                        text: "unset",
+                        id: "unset"
+                    }],
+                    textField: "text",
+                    idField: "id",
+                    onSelect: function () {
+                        renderDemo(true);
+                    }
+                });
+
+                div.find("td:first .inputContainer").append("<label>Width</label>");
+                div.find("td:first .inputContainer").append("<input class='width' type='text' />");
+
+                div.find("td:first .inputContainer").append("<label>Height</label>");
+                div.find("td:first .inputContainer").append("<input class='height' type='text' />");
+
+                div.find("td:first .inputContainer").append("<label>Include Header</label>");
+                div.find("td:first .inputContainer").append("<input type='checkbox' checked='checked' class='chkHeader' checkType='Yes,NO' value='none' />");
+
+                div.find("td:first .inputContainer").append("<label>Demo Text</label>");
+                div.find("td:first .inputContainer").append("<input type='checkbox' checked='checked' class='chkText' checkType='Yes,NO' value='none' />");
+
+                div.find("td:first .inputContainer").append("<label>Table-Size</label>");
+
+                div.find(".width, .height ,input[type='checkbox']").change(function () {
+                    renderDemo();
+                });
+
+
+
+                for (var i = 1; i <= 15; i++) {
+                    var tr = $("<tr></tr>");
+                    for (var x = 1; x <= 15; x++) {
+                        tr.append("<td></td>");
+                        if (appendOnly && tb.find("tbody tr").length >= i && tb.find("tbody tr:first td").length >= x) {
+                            tr.find("td:last").addClass("selected").addClass("disabled");
+                        }
+                    }
+                    table.find("tbody").append(tr);
+                }
+
+                var clickd = false;
+                table.mousedown(function () {
+                    clickd = !clickd;
+                    if (clickd == false)
+                        renderDemo();
+                });
+
+
+                table.find("tbody").find("td").mouseover(function () {
+                    if (!clickd)
+                        return;
+                    var trIndex = $(this).parent().index();
+                    var tdIndex = $(this).index();
+                    var addClass = $(this).hasClass("selected");
+                    $(table).find(".selected:not(.disabled)").removeClass("selected");
+                    $(table).find("tr").each(function () {
+                        if (trIndex >= $(this).index()) {
+                            $(this).find("td").each(function () {
+                                if (tdIndex >= $(this).index()) {
+                                    if (!$(this).hasClass("disabled"))
+                                        $(this).addClass("selected")
+                                    table.find("input").last().val(tdIndex + 1);
+                                    table.find("input").first().val(trIndex + 1);
+                                }
+                            });
+                        }
+                    });
+
+                });
+
+                div.find("td:first .inputContainer").append(table);
+                if (appendOnly)
+                    readTable(tb);
+                $(this.editor).dialog({
+                    content: div,
+                    title: "Table Properties",
+                    onSave: function () {
+                        generatedTable.attr("title", "Right click to edit")
+                        $(generatedTable).find("disabled").removeClass("disabled");
+                        if (!tb)
+                            jHtml.pasteHTML($('<a></a>').append($(generatedTable).clone()).html());
+                        else tb.replaceWith($('<a></a>').append($(generatedTable).clone()).html());
+                        jHtml.updateTextArea();
+                    }
+                }).show();
             }
         },
         initEditor: function (options) {
             var edit = this.editor = this.iframe[0].contentWindow.document;
+            edit.priv = function () { return priv; };
             edit.designMode = 'on';
             edit.open();
             edit.write(this.textarea.val());

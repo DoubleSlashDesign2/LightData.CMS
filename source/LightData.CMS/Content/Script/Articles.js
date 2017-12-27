@@ -7,10 +7,10 @@
             header: undefined,
             allchecked: false,
             autoFillMenusDataUrl: undefined,
-            themeUrl: undefined
+            themeUrl: undefined,
+            cssTheme: undefined
         }, options);
         var container = $(this);
-
 
         container.delete = function (artikelsIds) {
             if (!artikelsIds || artikelsIds.length <= 0)
@@ -30,18 +30,19 @@
                     });
                 }
             }).show();
-
-
         }
 
         container.generateIFrame = function (onDataLoaded) {
             var iframe = $('<iframe src="' + settings.themeUrl + '" id="frameDemo"></iframe>');
             iframe[0].onload = function () {
+                $(".ExternalCss").each(function () {
+                    iframe.contents().find("head").append($(this).clone());
+                });
+
                 if (onDataLoaded)
                     onDataLoaded(iframe);
             }
             return iframe;
-
         }
 
         container.save = function (item) {
@@ -77,7 +78,6 @@
             });
 
             var countries = base.getActiveCountries();
-
             $.each(countries, function () {
                 var node = $.grep(item.articleNodes, function (a) { return a.languageId == this.id });
                 if (node.length <= 0) {
@@ -105,10 +105,87 @@
                             tag.html(editor.val());
                         }
                     }).show();
-                    editor = tagContent.find("textarea").htmlarea();
+                    editor = tagContent.find("textarea").htmlarea({
+                        // Override/Specify the Toolbar buttons to show
+                        toolbar: [
+                            ["html"], ["bold", "italic", "underline", "strikethrough", "|", "subscript", "superscript"],
+                            ["increasefontsize", "decreasefontsize"],
+                            ["orderedlist", "unorderedlist"],
+                            ["indent", "outdent"],
+                            ["justifyleft", "justifycenter", "justifyright"],
+                            ["link", "unlink", "horizontalrule"],
+                            ["p", "h1", "h2", "h3", "h4", "h5", "h6"],
+                            ["cut", "copy", "paste", "table"],
+                            [
+                                {
+                                    // The CSS class used to style the <a> tag of the toolbar button
+                                    css: 'image tooltips',
 
+                                    // The text to use as the <a> tags "Alt" attribute value
+                                    text: 'Insert Image',
+
+                                    // The callback function to execute when the toolbar button is clicked
+                                    action: function (btn) {
+                                        // 'this' = jHtmlArea object
+                                        // 'btn' = jQuery object that represents the <a> ("anchor") tag for the toolbar button
+
+                                        var item = this;
+                                        $("body").files({
+                                            getUri: settings.getImageUri,
+                                            saveUri: settings.saveImageUri,
+                                            deleteUri: settings.deleteImageUri,
+                                            folderGetUri: settings.folderGetUri,
+                                            folderSaveUri: settings.folderSaveUri,
+                                            folderDeleteUri: settings.folderDeleteUri,
+                                            getImageUri: settings.getImageFullUri,
+                                            saveFileItemUri: settings.saveFileItemUri,
+                                            onInsert: function (img) {
+                                                try {
+                                                    item.image(img);
+                                                } catch (er) {
+                                                    item.image(img);
+                                                }
+                                                item.updateTextArea();
+                                            }
+                                        });
+
+                                    }
+                                }, {
+                                    // The CSS class used to style the <a> tag of the toolbar button
+                                    css: 'forecolor tooltips',
+
+                                    // The text to use as the <a> tags "Alt" attribute value
+                                    text: 'Forecolor',
+
+                                    // The callback function to execute when the toolbar button is clicked
+                                    action: function (btn) {
+                                        // 'this' = jHtmlArea object
+                                        // 'btn' = jQuery object that represents the <a> ("anchor") tag for the toolbar button
+                                        var item = this;
+                                        var colorPicker = btn.ColorPicker({
+                                            color: '#0000ff',
+                                            onShow: function (colpkr) {
+                                                $(colpkr).fadeIn(500);
+                                                return false;
+                                            },
+                                            onHide: function (colpkr) {
+                                                $(colpkr).fadeOut(500);
+                                                return false;
+                                            },
+                                            onChange: function (hsb, hex, rgb) {
+                                                item.forecolor("#" + hex);
+                                            }
+                                        });
+                                        if (!btn.hasClass("ini")) {
+                                            btn.addClass("ini");
+                                            btn.click();
+                                        }
+                                    }
+                                }
+                            ]
+                        ]
+                    });
                 });
-
             }));
 
             dialog = editContainer.dialog({
@@ -118,9 +195,7 @@
                     //return container.save(item, editContainer);
                 }
             });
-
             dialog.show();
-
         }
 
         container.render = function () {
@@ -134,7 +209,6 @@
                 .append("<th>Published</th>")
                 .append("<th>Menu</th>")
                 .append("<th style='width: 40px;'></th>");
-
 
             table.find("thead").find(".addItem").click(function () {
                 container.save(undefined);
@@ -172,20 +246,17 @@
                         tr.find(".delete").click(function () {
                             container.delete([item.id]);
                         });
-
                     }
 
                     $.each(data, function () {
                         var tr = $("<tr></tr>");
                         renderItem(this, tr);
                         table.find("tbody").append(tr);
-
                     });
                     container.tableFix();
                 }
             });
         }
-
         container.render();
     };
 }(jQuery));

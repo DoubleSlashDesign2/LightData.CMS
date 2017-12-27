@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightData.CMS", "..\source\LightData.CMS\LightData.CMS.csproj", "{DAC723CE-F225-4007-8DDC-C7138C7D8278}"
 EndProject
@@ -9,11 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightData.CMS.Modules", "..
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightData.Auth", "..\source\LightData.Auth\LightData.Auth.csproj", "{B6BC282D-4C06-4E48-9700-9ED17A82C7E4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityWorker.Core", "..\..\EntityWorker.Core\Source\EntityWorker.Core.csproj", "{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastDeepCloner", "..\..\FastDeepCloner\FastDeepCloner-New-\FastDeepCloner.csproj", "{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightDataTable.Site", "..\source\LightDataTable.Site\LightDataTable.Site.csproj", "{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityWorker.Core", "..\..\EntityWorker.Core\Source\EntityWorker.Core.csproj", "{32F63D38-7866-472E-A695-A699502889D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,22 +45,6 @@ Global
 		{B6BC282D-4C06-4E48-9700-9ED17A82C7E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6BC282D-4C06-4E48-9700-9ED17A82C7E4}.Release|x64.ActiveCfg = Release|Any CPU
 		{B6BC282D-4C06-4E48-9700-9ED17A82C7E4}.Release|x64.Build.0 = Release|Any CPU
-		{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}.Debug|x64.Build.0 = Debug|Any CPU
-		{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}.Release|x64.ActiveCfg = Release|Any CPU
-		{C0942D99-A00A-4AEE-AD11-7EE4DA9C4A0C}.Release|x64.Build.0 = Release|Any CPU
-		{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}.Debug|x64.ActiveCfg = Debug|x64
-		{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}.Debug|x64.Build.0 = Debug|x64
-		{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}.Release|x64.ActiveCfg = Release|x64
-		{9BE2DB6B-373B-40F7-B8F9-1A66CAD9CAE1}.Release|x64.Build.0 = Release|x64
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -71,6 +53,14 @@ Global
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Release|x64.ActiveCfg = Release|Any CPU
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Release|x64.Build.0 = Release|Any CPU
+		{32F63D38-7866-472E-A695-A699502889D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32F63D38-7866-472E-A695-A699502889D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32F63D38-7866-472E-A695-A699502889D2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{32F63D38-7866-472E-A695-A699502889D2}.Debug|x64.Build.0 = Debug|Any CPU
+		{32F63D38-7866-472E-A695-A699502889D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32F63D38-7866-472E-A695-A699502889D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32F63D38-7866-472E-A695-A699502889D2}.Release|x64.ActiveCfg = Release|Any CPU
+		{32F63D38-7866-472E-A695-A699502889D2}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

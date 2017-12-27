@@ -9,7 +9,7 @@
             url: undefined,
             success: function () { },
             error: function () { },
-            ignoreLoader: false
+            ignoreLoader: false,
         }, options);
 
 
@@ -47,7 +47,7 @@
             url: undefined,
             success: function () { },
             error: function () { },
-            ignoreLoader: false
+            ignoreLoader: false,
         }, options);
         settings.ignoreLoader = true;
         $("body").LightDataAjax(settings);

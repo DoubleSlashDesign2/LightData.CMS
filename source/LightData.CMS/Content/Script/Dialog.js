@@ -280,20 +280,32 @@
             cancelText: "Cancel",
             content: undefined,
             title: undefined,
-            autoFillDataUrl: undefined
+            autoFillDataUrl: undefined,
+            customButtons: []
         }, options);
 
         var dialog = $("<div class='lightDataDialog'><h1>" + (settings.title ? settings.title : "&nbsp;") + "<span class='cancel'>X</span></h1><nav></nav></div>");
-
+        var dim = undefined;
         dialog.settings = settings;
-        if ($(".lightDataDialog").length > 0)
-            dialog.css("zIndex", ($(".lightDataDialog").css("z-index")) + $(".dim").length);
+        if ($(".lightDataDialog").length > 0) {
+            var max = 0;
+            $(".lightDataDialog").each(function () {
+                max = Math.max(parseInt($(this).css("z-index")), max);
+            });
+            dialog.css("zIndex", max +1);
+        }
 
         function dimScreen() {
             var dimClass = "dim" + $(".dim").length + "dim dim";
             var dim = $("<div class='" + dimClass + "'></div>");
-            if ($(".dim").length > 0)
-                dim.css("zIndex", ($(".dim").css("z-index")) + $(".dim").length);
+            if ($(".dim").length > 0) {
+                var max = 0;
+                $(".dim").each(function () {
+                    max = Math.max(parseInt($(this).css("z-index")), max);
+                });
+                dim.css("zIndex", max+1);
+            }
+                //dim.css("zIndex", ($(".dim").css("z-index")) + $(".dim").length);
             return dim;
         }
 
@@ -315,8 +327,13 @@
             }, 1);
         }
 
+        dialog.close = function () {
+            dialog.remove();
+            dim.remove();
+        }
+
         dialog.show = function () {
-            var dim = dimScreen();
+            dim = dimScreen();
             dialog.find("nav").append(settings.content);
 
             dialog.draggable({ handle: "h1" });
@@ -332,6 +349,8 @@
                 dialog.find("span.cancel").remove();
                 dialog.find("h1").append("<span class='cancel'>" + settings.cancelText + "</span>");
                 dialog.find("h1> .cancel").click(function () {
+                    if ($(this).hasClass("disabled"))
+                        return;
                     if (settings.onCancel(dialog) !== false) {
                         dialog.remove();
                         dim.remove();
@@ -342,6 +361,8 @@
             if (settings.onSave) {
                 dialog.find("h1").append("<span class='save'>" + settings.saveText + "</span>");
                 dialog.find("h1> .save").click(function () {
+                    if ($(this).hasClass("disabled"))
+                        return;
                     if (settings.onSave(dialog) !== false) {
                         dialog.remove();
                         dim.remove();
@@ -352,12 +373,29 @@
             if (settings.onDelete) {
                 dialog.find("h1").append("<span class='delete'>" + settings.deleteText + "</span>");
                 dialog.find("h1> .delete").click(function () {
+                    if ($(this).hasClass("disabled"))
+                        return;
                     if (settings.onDelete(dialog) !== false) {
                         dialog.remove();
                         dim.remove();
                     }
                 });
             }
+
+            $(settings.customButtons).each(function () {
+                var btn = $("<span class='" + this.class + "'>" + this.text + "</span>");
+                dialog.find("h1").append(btn);
+                var item = this;
+                btn.click(function () {
+                    if ($(this).hasClass("disabled"))
+                        return;
+                    if (typeof item.click == "undefined" || item.click(dialog) !== false) {
+                        dialog.remove();
+                        dim.remove();
+                    }
+                });
+
+            });
 
             $("body").append(dialog).append(dim);
 

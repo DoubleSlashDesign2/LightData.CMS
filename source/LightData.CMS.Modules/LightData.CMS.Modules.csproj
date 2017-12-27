@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\EntityWorker.Core\Source\EntityWorker.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Reference Include="System.Configuration">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Configuration.dll</HintPath>
     </Reference>
@@ -29,7 +25,11 @@
   <ItemGroup>
     <Folder Include="Themes\Default\images\" />
     <Folder Include="Themes\Default\script\" />
-    <Folder Include="Themes\Default\css\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityWorker.Core" Version="1.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>

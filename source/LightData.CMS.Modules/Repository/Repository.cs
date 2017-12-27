@@ -1,6 +1,7 @@
 ﻿using EntityWorker.Core.Transaction;
 using System.Configuration;
 using EntityWorker.Core.Helper;
+using LightData.CMS.Modules.Library;
 
 namespace LightData.CMS.Modules.Repository
 {

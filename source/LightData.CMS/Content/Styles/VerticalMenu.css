@@ -1,94 +1,94 @@
-﻿.tableTree {
-    width: 200px;
-    min-height: 200px;
-    border: 1px solid #CCC;
-    display: block;
-    margin: auto;
-    position: relative;
-    background: #FFF;
-    overflow: hidden;
-    margin-bottom: 20px;
+﻿.tableTree, .tableTree ul, .tableTree li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-    .tableTree h2 {
+.tableTree {
+    background: url('data:image/gif;base64,R0lGODlhLAAEAIAAAO7u7v///yH5BAAAAAAALAAAAAAsAAQAAAIPjI8Bye3vFpz0yYrxzbgAADs=') repeat-y;
+    overflow: hidden;
+}
+
+    .tableTree li a.selected {
+        text-decoration:underline;
+        text-decoration-color:#CCC;
+    }
+        .tableTree li {
+        line-height: 20px;
+        margin-top: 1px;
+        position: relative;
         width: 100%;
-        padding: 10px;
-        border-bottom: 1px solid #CCC;
-        font-weight: bold;
-        background: #337ab7;
-        color: white;
+    }
+    /* IE leaves a blank space where span is added so this is to avoid that */
+    * html .tableTree li {
+        float: left;
+        display: inline;
     }
 
-    .tableTree ul {
-        width: 100%;
-        list-style: none;
-    }
-
-    .tableTree li li {
-        margin: 0px 0px 0px 16px;
-    }
-
-            .tableTree ul li > span .text.selected {
-                background: #72b8f3;
-                color: #ffffff;
-                background: linear-gradient(to right, #72b8f3 100%, transparent 100%);
-            }
-
-        .tableTree ul.subItem li > span {
-            position: relative;
-            left: 10px;
-        }
-
-            .tableTree ul.subItem li > span .edit {
-                position: relative;
-                left: -10px;
-            }
-
-        .tableTree ul.subItem li > .arrow-down, .subItem li > .arrow-up {
-            left: 10px;
-        }
-
-        .tableTree ul li > span {
-            display: inline-block;
-            width: 86%;
-            height: 100%;
-            padding-left: 3px;
-            margin-left: 0px;
-            font-size: 13px;
-            color: #4e4d4d;
-        }
-
-    .tableTree > ul > li > span .text {
-        display: inline-block;
-        width: 99%;
-        padding: 2px;
-        border-radius: 2px;
-    }
-
-
-    .tableTree ul li > span .text {
-        display: inline-block;
-        width: 99%;
-        padding: 2px;
-        border-radius: 2px;
-    }
-
-
-    .tableTree ul li {
-        width: 100%;
-        min-height: 20px;
-        cursor: pointer;
-    }
-
-
-        .tableTree ul li > .arrow-up, .tableTree ul li > .arrow-down {
-            position: relative;
-            margin-left: 1px;
-            margin-top: 5px;
+        .tableTree li a {
+            padding-left: 28px;
+            text-decoration: none;
+            color: #057fac;
             cursor: pointer;
-            float: left;
-            width: 0;
-            height: 0;
-            display: inline-block;
+            font-size: 13px;
         }
 
+        .tableTree li span {
+            float: left;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 13px;
+            height: 13px;
+            cursor: auto;
+            font-size: 0;
+        }
+
+            .tableTree li span, .tableTree li span.collapsed {
+                background: url('data:image/gif;base64,R0lGODlhDQANAJEAAFVVVefn5////wAAACH5BAAAAAAALAAAAAANAA0AAAIgjI8oyy3mIoxtMuDswjVcAHKP14iLJpgj1bEMKiWyUQAAOw==') no-repeat 0 0;
+                cursor: pointer;
+            }
+
+                .tableTree li span.expanded {
+                    background: url('data:image/gif;base64,R0lGODlhDQANAJEAAFVVVefn5////wAAACH5BAAAAAAALAAAAAANAA0AAAIbjI8oyy3mIoxt0mWvBZyzTIFScH1k+Zxlwh4FADs=') no-repeat 0 0;
+                    cursor: pointer;
+                }
+
+        /* sub levels */
+
+        .tableTree li ul {
+            margin-left: 28px;
+            background: url('data:image/gif;base64,R0lGODlhLAAEAIAAAO7u7v///yH5BAAAAAAALAAAAAAsAAQAAAIPjI8Bye3vFpz0yYrxzbgAADs=') repeat-y;
+        }
+
+        .tableTree li li {
+            background: url('data:image/gif;base64,R0lGODlhLAAUAIAAAO7u7v///yH5BAAAAAAALAAAAAAsABQAAAIyjI8Bye3vFpz0yYrxzdz2H4Eiso1faXJoqrEgAMfy6ip1R9+h3vJV7iMFKcChzegJFgAAOw==') no-repeat 0 0;
+        }
+
+    /* etc. */
+
+    /* float fix */
+
+    .tableTree:after, .tableTree ul:after {
+        content: ".";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+
+    .tableTree, .tableTree ul {
+        display: block;
+    }
+        /*  \*/
+        .tableTree, .tableTree ul {
+            min-height: 1%;
+        }
+
+            * html .tableTree, * html .tableTree ul {
+                height: 1%;
+            }
+                /*  */
+                .tableTree ul {
+                    display: none;
+                }

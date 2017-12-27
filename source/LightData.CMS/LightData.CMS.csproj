@@ -1,6 +1,6 @@
 ﻿<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\solution\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\solution\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props')" />
   <Import Project="..\..\solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\..\solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
-  <Import Project="..\..\solution\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\..\solution\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -50,8 +50,8 @@
     <Reference Include="dotless.Core, Version=1.5.2.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
       <HintPath>..\..\solution\packages\dotless.1.5.2\lib\dotless.Core.dll</HintPath>
     </Reference>
-    <Reference Include="FastDeepCloner, Version=1.0.0.21, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\solution\packages\FastDeepCloner.1.0.21\lib\net461\FastDeepCloner.dll</HintPath>
+    <Reference Include="FastDeepCloner, Version=1.0.0.22, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\solution\packages\FastDeepCloner.1.0.22\lib\net461\FastDeepCloner.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\solution\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -62,6 +62,12 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\solution\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SqlClient, Version=4.2.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\solution\packages\System.Data.SqlClient.4.4.2\lib\net461\System.Data.SqlClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\System.Data.SQLite.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -153,11 +159,206 @@
     <Content Include="Content\HtmlEditorStyle\jqueryui\ui-lightness\images\ui-icons_ffd27a_256x240.png" />
     <Content Include="Content\HtmlEditorStyle\jqueryui\ui-lightness\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\HtmlEditorStyle\jqueryui\ui-lightness\jquery-ui-1.7.2.custom.css" />
+    <Content Include="Content\images\blank.gif" />
+    <Content Include="Content\images\colorpicker_background.png" />
+    <Content Include="Content\images\colorpicker_hex.png" />
+    <Content Include="Content\images\colorpicker_hsb_b.png" />
+    <Content Include="Content\images\colorpicker_hsb_h.png" />
+    <Content Include="Content\images\colorpicker_hsb_s.png" />
+    <Content Include="Content\images\colorpicker_indic.gif" />
+    <Content Include="Content\images\colorpicker_overlay.png" />
+    <Content Include="Content\images\colorpicker_rgb_b.png" />
+    <Content Include="Content\images\colorpicker_rgb_g.png" />
+    <Content Include="Content\images\colorpicker_rgb_r.png" />
+    <Content Include="Content\images\colorpicker_select.gif" />
+    <Content Include="Content\images\colorpicker_submit.png" />
+    <Content Include="Content\images\custom_background.png" />
+    <Content Include="Content\images\custom_hex.png" />
+    <Content Include="Content\images\custom_hsb_b.png" />
+    <Content Include="Content\images\custom_hsb_h.png" />
+    <Content Include="Content\images\custom_hsb_s.png" />
+    <Content Include="Content\images\custom_indic.gif" />
+    <Content Include="Content\images\custom_rgb_b.png" />
+    <Content Include="Content\images\custom_rgb_g.png" />
+    <Content Include="Content\images\custom_rgb_r.png" />
+    <Content Include="Content\images\custom_submit.png" />
     <Content Include="Content\images\disk.png" />
+    <Content Include="Content\images\select.png" />
+    <Content Include="Content\images\select2.png" />
+    <Content Include="Content\images\slider.png" />
     <Content Include="Content\Script\Articles.js" />
     <Content Include="Content\Script\CheckBox.js" />
+    <Content Include="Content\Script\colorpicker.js" />
+    <Content Include="Content\Script\ContextMenu.js" />
     <Content Include="Content\Script\Dialog.js" />
+    <Content Include="Content\Script\fancyDatePicker.js" />
+    <Content Include="Content\Script\FileUploader.js" />
+    <Content Include="Content\Script\globalization\af-ZA.js" />
+    <Content Include="Content\Script\globalization\ar-AE.js" />
+    <Content Include="Content\Script\globalization\ar-BH.js" />
+    <Content Include="Content\Script\globalization\ar-DJ.js" />
+    <Content Include="Content\Script\globalization\ar-DZ.js" />
+    <Content Include="Content\Script\globalization\ar-EG.js" />
+    <Content Include="Content\Script\globalization\ar-IQ.js" />
+    <Content Include="Content\Script\globalization\ar-JO.js" />
+    <Content Include="Content\Script\globalization\ar-KM.js" />
+    <Content Include="Content\Script\globalization\ar-KW.js" />
+    <Content Include="Content\Script\globalization\ar-LB.js" />
+    <Content Include="Content\Script\globalization\ar-LY.js" />
+    <Content Include="Content\Script\globalization\ar-MA.js" />
+    <Content Include="Content\Script\globalization\ar-MR.js" />
+    <Content Include="Content\Script\globalization\ar-OM.js" />
+    <Content Include="Content\Script\globalization\ar-PS.js" />
+    <Content Include="Content\Script\globalization\ar-QA.js" />
+    <Content Include="Content\Script\globalization\ar-SA.js" />
+    <Content Include="Content\Script\globalization\ar-SD.js" />
+    <Content Include="Content\Script\globalization\ar-SO.js" />
+    <Content Include="Content\Script\globalization\ar-SY.js" />
+    <Content Include="Content\Script\globalization\ar-TN.js" />
+    <Content Include="Content\Script\globalization\ar-YE.js" />
+    <Content Include="Content\Script\globalization\az-Cyrl-AZ.js" />
+    <Content Include="Content\Script\globalization\az-Latn-AZ.js" />
+    <Content Include="Content\Script\globalization\be-BY.js" />
+    <Content Include="Content\Script\globalization\bg-BG.js" />
+    <Content Include="Content\Script\globalization\bs-Latn-BA.js" />
+    <Content Include="Content\Script\globalization\ca-ES.js" />
+    <Content Include="Content\Script\globalization\cs-CZ.js" />
+    <Content Include="Content\Script\globalization\cy-GB.js" />
+    <Content Include="Content\Script\globalization\da-DK.js" />
+    <Content Include="Content\Script\globalization\de-AT.js" />
+    <Content Include="Content\Script\globalization\de-CH.js" />
+    <Content Include="Content\Script\globalization\de-DE.js" />
+    <Content Include="Content\Script\globalization\de-LI.js" />
+    <Content Include="Content\Script\globalization\de-LU.js" />
+    <Content Include="Content\Script\globalization\dv-MV.js" />
+    <Content Include="Content\Script\globalization\el-GR.js" />
+    <Content Include="Content\Script\globalization\en-029.js" />
+    <Content Include="Content\Script\globalization\en-AU.js" />
+    <Content Include="Content\Script\globalization\en-BZ.js" />
+    <Content Include="Content\Script\globalization\en-CA.js" />
+    <Content Include="Content\Script\globalization\en-GB.js" />
+    <Content Include="Content\Script\globalization\en-IE.js" />
+    <Content Include="Content\Script\globalization\en-JM.js" />
+    <Content Include="Content\Script\globalization\en-NZ.js" />
+    <Content Include="Content\Script\globalization\en-PH.js" />
+    <Content Include="Content\Script\globalization\en-TT.js" />
+    <Content Include="Content\Script\globalization\en-US.js" />
+    <Content Include="Content\Script\globalization\en-ZA.js" />
+    <Content Include="Content\Script\globalization\en-ZW.js" />
+    <Content Include="Content\Script\globalization\es-AR.js" />
+    <Content Include="Content\Script\globalization\es-BO.js" />
+    <Content Include="Content\Script\globalization\es-CL.js" />
+    <Content Include="Content\Script\globalization\es-CO.js" />
+    <Content Include="Content\Script\globalization\es-CR.js" />
+    <Content Include="Content\Script\globalization\es-DO.js" />
+    <Content Include="Content\Script\globalization\es-EC.js" />
+    <Content Include="Content\Script\globalization\es-ES.js" />
+    <Content Include="Content\Script\globalization\es-GT.js" />
+    <Content Include="Content\Script\globalization\es-HN.js" />
+    <Content Include="Content\Script\globalization\es-MX.js" />
+    <Content Include="Content\Script\globalization\es-NI.js" />
+    <Content Include="Content\Script\globalization\es-PA.js" />
+    <Content Include="Content\Script\globalization\es-PE.js" />
+    <Content Include="Content\Script\globalization\es-PR.js" />
+    <Content Include="Content\Script\globalization\es-PY.js" />
+    <Content Include="Content\Script\globalization\es-SV.js" />
+    <Content Include="Content\Script\globalization\es-UY.js" />
+    <Content Include="Content\Script\globalization\es-VE.js" />
+    <Content Include="Content\Script\globalization\et-EE.js" />
+    <Content Include="Content\Script\globalization\eu-ES.js" />
+    <Content Include="Content\Script\globalization\fa-IR.js" />
+    <Content Include="Content\Script\globalization\fi-FI.js" />
+    <Content Include="Content\Script\globalization\fo-FO.js" />
+    <Content Include="Content\Script\globalization\fr-BE.js" />
+    <Content Include="Content\Script\globalization\fr-CA.js" />
+    <Content Include="Content\Script\globalization\fr-CH.js" />
+    <Content Include="Content\Script\globalization\fr-FR.js" />
+    <Content Include="Content\Script\globalization\fr-LU.js" />
+    <Content Include="Content\Script\globalization\fr-MC.js" />
+    <Content Include="Content\Script\globalization\gl-ES.js" />
+    <Content Include="Content\Script\globalization\gu-IN.js" />
+    <Content Include="Content\Script\globalization\he-IL.js" />
+    <Content Include="Content\Script\globalization\hi-IN.js" />
+    <Content Include="Content\Script\globalization\hr-BA.js" />
+    <Content Include="Content\Script\globalization\hr-HR.js" />
+    <Content Include="Content\Script\globalization\hu-HU.js" />
+    <Content Include="Content\Script\globalization\hy-AM.js" />
+    <Content Include="Content\Script\globalization\id-ID.js" />
+    <Content Include="Content\Script\globalization\is-IS.js" />
+    <Content Include="Content\Script\globalization\it-CH.js" />
+    <Content Include="Content\Script\globalization\it-IT.js" />
+    <Content Include="Content\Script\globalization\ja-JP.js" />
+    <Content Include="Content\Script\globalization\ka-GE.js" />
+    <Content Include="Content\Script\globalization\kab-DZ.js" />
+    <Content Include="Content\Script\globalization\kk-KZ.js" />
+    <Content Include="Content\Script\globalization\kn-IN.js" />
+    <Content Include="Content\Script\globalization\ko-KR.js" />
+    <Content Include="Content\Script\globalization\kok-IN.js" />
+    <Content Include="Content\Script\globalization\ky-KG.js" />
+    <Content Include="Content\Script\globalization\lt-LT.js" />
+    <Content Include="Content\Script\globalization\lv-LV.js" />
+    <Content Include="Content\Script\globalization\mi-NZ.js" />
+    <Content Include="Content\Script\globalization\mk-MK.js" />
+    <Content Include="Content\Script\globalization\mn-MN.js" />
+    <Content Include="Content\Script\globalization\mr-IN.js" />
+    <Content Include="Content\Script\globalization\ms-BN.js" />
+    <Content Include="Content\Script\globalization\ms-MY.js" />
+    <Content Include="Content\Script\globalization\mt-MT.js" />
+    <Content Include="Content\Script\globalization\nb-NO.js" />
+    <Content Include="Content\Script\globalization\nl-BE.js" />
+    <Content Include="Content\Script\globalization\nl-NL.js" />
+    <Content Include="Content\Script\globalization\nn-NO.js" />
+    <Content Include="Content\Script\globalization\ns-ZA.js" />
+    <Content Include="Content\Script\globalization\pa-IN.js" />
+    <Content Include="Content\Script\globalization\pl-PL.js" />
+    <Content Include="Content\Script\globalization\pt-BR.js" />
+    <Content Include="Content\Script\globalization\pt-PT.js" />
+    <Content Include="Content\Script\globalization\quz-BO.js" />
+    <Content Include="Content\Script\globalization\quz-EC.js" />
+    <Content Include="Content\Script\globalization\quz-PE.js" />
+    <Content Include="Content\Script\globalization\ro-RO.js" />
+    <Content Include="Content\Script\globalization\ru-RU.js" />
+    <Content Include="Content\Script\globalization\sa-IN.js" />
+    <Content Include="Content\Script\globalization\se-FI.js" />
+    <Content Include="Content\Script\globalization\se-NO.js" />
+    <Content Include="Content\Script\globalization\se-SE.js" />
+    <Content Include="Content\Script\globalization\sk-SK.js" />
+    <Content Include="Content\Script\globalization\sl-SI.js" />
+    <Content Include="Content\Script\globalization\sma-NO.js" />
+    <Content Include="Content\Script\globalization\sma-SE.js" />
+    <Content Include="Content\Script\globalization\smj-NO.js" />
+    <Content Include="Content\Script\globalization\smj-SE.js" />
+    <Content Include="Content\Script\globalization\smn-FI.js" />
+    <Content Include="Content\Script\globalization\sms-FI.js" />
+    <Content Include="Content\Script\globalization\sq-AL.js" />
+    <Content Include="Content\Script\globalization\sr-Cyrl-BA.js" />
+    <Content Include="Content\Script\globalization\sr-Cyrl-CS.js" />
+    <Content Include="Content\Script\globalization\sr-Latn-BA.js" />
+    <Content Include="Content\Script\globalization\sr-Latn-CS.js" />
+    <Content Include="Content\Script\globalization\sv-FI.js" />
+    <Content Include="Content\Script\globalization\sv-SE.js" />
+    <Content Include="Content\Script\globalization\sw-KE.js" />
+    <Content Include="Content\Script\globalization\syr-SY.js" />
+    <Content Include="Content\Script\globalization\ta-IN.js" />
+    <Content Include="Content\Script\globalization\te-IN.js" />
+    <Content Include="Content\Script\globalization\th-TH.js" />
+    <Content Include="Content\Script\globalization\tn-ZA.js" />
+    <Content Include="Content\Script\globalization\tr-TR.js" />
+    <Content Include="Content\Script\globalization\tt-RU.js" />
+    <Content Include="Content\Script\globalization\uk-UA.js" />
+    <Content Include="Content\Script\globalization\ur-PK.js" />
+    <Content Include="Content\Script\globalization\uz-Cyrl-UZ.js" />
+    <Content Include="Content\Script\globalization\uz-Latn-UZ.js" />
+    <Content Include="Content\Script\globalization\vi-VN.js" />
+    <Content Include="Content\Script\globalization\xh-ZA.js" />
+    <Content Include="Content\Script\globalization\zh-CN.js" />
+    <Content Include="Content\Script\globalization\zh-HK.js" />
+    <Content Include="Content\Script\globalization\zh-MO.js" />
+    <Content Include="Content\Script\globalization\zh-SG.js" />
+    <Content Include="Content\Script\globalization\zh-TW.js" />
+    <Content Include="Content\Script\globalization\zu-ZA.js" />
     <Content Include="Content\Script\HorizontalMenu.js" />
+    <Content Include="Content\Script\InputValidator.js" />
     <Content Include="Content\Script\JqAutoFill.js" />
     <Content Include="Content\Script\jquery-3.2.1.min.js" />
     <Content Include="Content\Script\jquery-te-1.4.0.js" />
@@ -171,8 +372,12 @@
     <Content Include="Content\Script\VerticalMenu.js" />
     <Content Include="Content\Styles\Articles.css" />
     <Content Include="Content\Styles\CheckBox.css" />
+    <Content Include="Content\Styles\colorpicker.css" />
     <Content Include="Content\Styles\Dialog.css" />
     <Content Include="Content\Styles\Errors.css" />
+    <Content Include="Content\Styles\fancyDatePicker.css" />
+    <Content Include="Content\Styles\FileUploader.css" />
+    <Content Include="Content\Styles\images\jquery-te.png" />
     <Content Include="Content\Styles\images\ui-icons_444444_256x240.png" />
     <Content Include="Content\Styles\images\ui-icons_555555_256x240.png" />
     <Content Include="Content\Styles\images\ui-icons_777620_256x240.png" />
@@ -182,7 +387,7 @@
     <Content Include="Content\Styles\JqAutoFill.css" />
     <Content Include="Content\Styles\jquery-te-1.4.0.css" />
     <Content Include="Content\Styles\jquery-ui.theme.css" />
-    <Content Include="Content\Styles\Layout.css" />
+    <Content Include="Content\Styles\CMSLayout.css" />
     <Content Include="App_Data\LightDataTable.db" />
     <Content Include="Content\Styles\HorizontalMenu.css" />
     <Content Include="Content\Styles\LightDataTableLoader.css" />
@@ -202,6 +407,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
+    <Compile Include="Controllers\FileUploaderController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MenusController.cs" />
     <Compile Include="Global.asax.cs">
@@ -231,7 +437,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\EntityWorker.Core\Source\EntityWorker.Core.csproj">
-      <Project>{c0942d99-a00a-4aee-ad11-7ee4da9c4a0c}</Project>
+      <Project>{32f63d38-7866-472e-a695-a699502889d2}</Project>
       <Name>EntityWorker.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\LightData.Auth\LightData.Auth.csproj">
@@ -273,9 +479,11 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\solution\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\solution\packages\Microsoft.Net.Compilers.2.4.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\..\solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\..\solution\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\solution\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <Import Project="..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

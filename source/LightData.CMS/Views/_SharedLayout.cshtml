@@ -1,5 +1,4 @@
 ﻿@using System.Web.Optimization
-@using LightData.Auth.Helper
 <!DOCTYPE html>
 
 <html>
@@ -9,11 +8,20 @@
         var globalSettings =
         {
             setValue: '@Url.Action("SetValue", "Menus")',
-            getValue: '@Url.Action("GetValue", "Menus")'
+            getValue: '@Url.Action("GetValue", "Menus")',
+            htmlFormater: '@Url.Action("HtmlFormater", "Menus", new { }, this.Request.Url.Scheme)',
         };
     </script>
     @Styles.Render("~/bundles/css")
     @Scripts.Render("~/bundles/jquery")
+
+
+
+    @foreach (var file in LightData.CMS.Modules.Helper.Methods.GetTheme("css"))
+    {
+        <link class="ExternalCss" href='@Url.Action("Css", "FileUploader", new { }, this.Request.Url.Scheme)?path=@HttpContext.Current.Server.UrlEncode(file)' rel="stylesheet" />
+    }
+
 
     <title>@ViewBag.Title</title>
 
@@ -88,6 +96,7 @@
         $(document).ready(function () {
             $.toolTipIni();
             $.checkBox();
+            $.inputValidator();
             var timeOut = undefined;
             function floatFix() {
                 $("#containerRight").css({ "min-height": $(window).height() - 50 });
@@ -95,9 +104,9 @@
                 var centerMenu = $("#centerContent");
                 var windowWidth = $(window).width()
                 centerMenu.css("max-width", (windowWidth - rightMenu));
-            
 
-              
+
+
                 if (timeOut === undefined)
                 $(window).resize(function () {
                     clearTimeout(timeOut);

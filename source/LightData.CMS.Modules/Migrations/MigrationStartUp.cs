@@ -67,6 +67,24 @@ namespace LightData.CMS.Modules.Migrations
             };
 
             menus.ForEach(x => repository.Save(x));
+
+            var folders = new List<Folder>()
+            {
+                new Folder()
+                {
+                    Name= "Root",
+                    IsSystem= true,
+                    Children= new List<Folder>()
+                    {
+                        new Folder()
+                        {
+                            Name= "Default"
+                        }
+                    }
+                }
+            };
+
+            folders.ForEach(x => repository.Save(x));
             base.ExecuteMigration(repository);
             repository.SaveChanges();
         }

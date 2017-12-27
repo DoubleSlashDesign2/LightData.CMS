@@ -82,11 +82,13 @@
                     } else {
                         container.find(".b").find(".val").first().click(function () {
                             o.prop("checked", true);
+                            o.change();
                             validateBox(o);
                         });
 
                         container.find(".b").find(".val").last().click(function () {
                             o.prop("checked", false);
+                            o.change();
                             validateBox(o);
                         });
                     }

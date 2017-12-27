@@ -64,65 +64,11 @@ function GetValue(key, onSuccess) {
                 table.find("thead").find("input[type='checkbox']").each(function (i, a) {
                     $.checkBox({ items: inputs.eq(i) }).prop($(this).is(":checked"));
                 });
-              
+
 
             } else staticThead.hide();
         });
     };
-
-    $.fn.contextMenu = function (options) {
-        var settings = $.extend({
-            // [{ Text, id }]
-            dataSource: [],
-            click: function (item) { }
-        }, options);
-        var container = $(this);
-
-        container.attr("title", "Right click to edit");
-        function buildContext(e) {
-            $(".contextMenu").remove();
-            var context = $("<div class='contextMenu'></div>");
-            $.each(settings.dataSource,
-                function () {
-                    var item = this;
-                    context.append("<div class='contextItem'>" + this.text + "</div>");
-                    context.find("div").last().click(function () {
-                        if (settings.click)
-                            settings.click(item);
-                        $(".contextMenu").remove();
-                    });
-
-                });
-
-            context.css({
-                left: e.clientX,
-                top: e.clientY
-            });
-            $("body").append(context);
-            context.slideDown("slow");
-            context.width(Math.max.apply(Math,
-                $.map(context.find("div"),
-                    function (o) {
-                        return o.getBoundingClientRect().width;
-                    })));
-
-
-        }
-
-        $("body").mousedown(function (e) {
-            var target = $(e.target);
-            if (!(target.hasClass("contextItem") || target.hasClass("contextMenu")))
-                $(".contextMenu").remove();
-
-        });
-
-        container.bind("contextmenu", function (e) {
-            buildContext(e);
-            return false;
-        });
-
-        return container;
-    }
 
 
     jQuery.fn.center = function (isRelative, parant) {

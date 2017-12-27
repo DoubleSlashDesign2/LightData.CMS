@@ -7,7 +7,7 @@ namespace LightData.CMS
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new StyleBundle("~/bundles/css")
-                .Include("~/Content/Styles/Layout.css", "~/Content/Styles/Layout.css")
+                .Include("~/Content/Styles/CMSLayout.css", "~/Content/Styles/CMSLayout.css")
                 .Include("~/Content/Styles/jquery-ui.theme.css")
                 .Include("~/Content/Styles/Errors.css")
                 .Include("~/Content/Styles/HorizontalMenu.css")
@@ -22,7 +22,10 @@ namespace LightData.CMS
                 .Include("~/Content/Styles/jquery-te-1.4.0.css")
                 .Include("~/Content/HtmlEditorStyle/jHtmlArea.css")
                 .Include("~/Content/HtmlEditorStyle/jHtmlArea.Editor.css")
-                .Include("~/Content/Styles/Tabs.css"));
+                .Include("~/Content/Styles/Tabs.css")
+                .Include("~/Content/Styles/FileUploader.css")
+                .Include("~/Content/Styles/colorpicker.css")
+                .Include("~/Content/Styles/fancyDatePicker.css"));
 
             //.Include("~/Content/HtmlEditorScript/jquery-ui-1.7.2.custom.min.js")
             bundles.Add(new ScriptBundle("~/bundles/jquery")
@@ -41,7 +44,12 @@ namespace LightData.CMS
                 .Include("~/Content/Script/Articles.js")
                 .Include("~/Content/Script/jquery-te-1.4.0.js")
                 .Include("~/Content/HtmlEditorScript/jHtmlArea-0.8.js")
-                .Include("~/Content/Script/Tabs.js"));
+                .Include("~/Content/Script/Tabs.js")
+                .Include("~/Content/Script/FileUploader.js")
+                .Include("~/Content/Script/colorpicker.js")
+                .Include("~/Content/Script/InputValidator.js")
+                .Include("~/Content/Script/fancyDatePicker.js")
+                .Include("~/Content/Script/ContextMenu.js"));
         }
     }
 }

@@ -77,13 +77,11 @@
         if (timeOut === undefined)
             $(window).resize(function () {
                 clearTimeout(timeOut);
-
                 timeOut = setTimeout(container.setPos, 80);
             });
 
         if (!$(this).hasClass("tabContainer"))
             $(this).append(container);
-
         setTimeout(container.setPos, 100)
         return container;
     };

@@ -10,7 +10,7 @@
         var container = $(this);
         container.addClass("tableTree");
 
-        container.render = function () {
+        container.render = function (onRendered) {
             container.LightDataAjax({
                 contentType: "application/json",
                 dataType: "json",
@@ -24,43 +24,51 @@
                         $.each(items, function () {
                             var tItem = this;
                             var div = $("<li></li>");
-                            div.append("<div itemId='" + this.id + "' class='arrow-down'></div><span class='sp'><span class='text'>" + this.displayName + "</span></span>");
+                            div.append("<a class='text'>" + this.displayName + "</a><span itemId='" + tItem.id + "' class='collapsed'></span>");
+                            //div.append("<div itemId='" + this.id + "' class='arrow-down'></div><span class='sp'><span class='text'>" + this.displayName + "</span></span>");
                             bindEdit(div.find(".text"), this);
                             if (this.children && this.children.length > 0) {
                                 var ul = $("<ul class='subItem'></ul>");
                                 ul.hide();
                                 GetValue(this.id.toString(),
                                     function (data) {
-                                        if (data === true)
-                                            div.find("div[itemId='" + tItem.id + "']").click();
+                                        if (data === true) {
+                                            div.find("span[itemId='" + tItem.id + "']").removeClass("collapsed").addClass("expanded");
+                                            ul.show();
+
+                                        }
                                     });
                                 div.append(ul);
                                 renderChildren(this.children, ul);
-                            } else div.find("div[itemId='" + tItem.id + "']").css("visibility", "hidden");
+                            } else div.find("span[itemId='" + tItem.id + "']").css("visibility", "hidden");
 
                             parent.append(div);
                         });
                     }
-                    var ulContainer = $("<ul></ul>");
+                    var ulContainer = $("<ul style='display:block'></ul>");
                     container.append(ulContainer);
                     $(data).each(function () {
                         var tItem = this;
                         var div = $("<li></li>");
-                        div.append("<div itemId='" + this.id + "' class='arrow-down'></div><span class='sp'><span class='text'>" + this.displayName + "</span></span>");
+                        div.append("<a class='text'>" + this.displayName + "</a><span itemId='" + tItem.id +"' class='collapsed'></span>");
+
+                        //div.append("<div itemId='" + this.id + "' class='arrow-down'></div><span class='sp'><span class='text'>" + this.displayName + "</span></span>");
                         bindEdit(div.find(".text"), this);
                         if (this.children && this.children.length > 0) {
                             var ul = $("<ul class='subItem'></ul>");
                             ul.hide();
                             GetValue(this.id.toString(),
                                 function (t) {
-                                    if (t === true)
-                                        div.find("div[itemId='" + tItem.id + "']").first().click();
+                                    if (t === true) {
+                                        div.find("span[itemId='" + tItem.id + "']").removeClass("collapsed").addClass("expanded");
+                                        ul.show();
+                                    }
 
                                 });
 
                             div.append(ul);
                             renderChildren(this.children, ul);
-                        } else div.find("div[itemId='" + tItem.id + "']").css("visibility", "hidden");
+                        } else div.find("span[itemId='" + tItem.id + "']").css("visibility", "hidden");
 
                         ulContainer.append(div);
                     });
@@ -73,14 +81,14 @@
                     });
 
                     function folder() {
-                        container.find(".arrow-up, .arrow-down").click(function () {
-                            if ($(this).hasClass("arrow-up")) {
+                        container.find("span:not([itemId=''])").click(function () {
+                            if ($(this).hasClass("expanded")) {
                                 $(this).parent().children("ul").hide();
-                                $(this).removeClass("arrow-up").addClass("arrow-down");
+                                $(this).removeClass("expanded").addClass("collapsed");
                                 SetValue($(this).attr("itemId"), false);
                             } else {
                                 $(this).parent().children("ul").show();
-                                $(this).removeClass("arrow-down").addClass("arrow-up");
+                                $(this).removeClass("collapsed").addClass("expanded");
                                 SetValue($(this).attr("itemId"), true);
                             }
                         });
@@ -102,7 +110,7 @@
                                     id: 1
                                 }
                             ],
-                            click: function(tItem) {
+                            click: function (tItem) {
                                 if (tItem.id === 0)
                                     container.create(item);
                                 else container.delete(item);
@@ -111,12 +119,15 @@
                     }
 
                     folder();
+
+                    if (onRendered)
+                        onRendered();
                 }
 
             });
         }
 
-        container.delete = function(item) {
+        container.delete = function (item) {
             container.dialog({
                 content: "You will be deleting this item and all its children.<br> Are you sure?",
                 saveText: "OK",
@@ -208,7 +219,31 @@
             });
         }
 
-        container.render();
+        container.render(function () {
+
+            //this.listItem = function (li) {
+            //    if (li.getElementsByTagName("ul").length > 0) {
+            //        var ul = li.getElementsByTagName("ul")[0];
+            //        ul.style.display = "none";
+            //        var span = document.createElement("span");
+            //        span.className = "collapsed";
+            //        span.onclick = function () {
+            //            ul.style.display = (ul.style.display == "none") ? "block" : "none";
+            //            this.className = (ul.style.display == "none") ? "collapsed" : "expanded";
+            //        };
+            //        li.appendChild(span);
+            //    };
+            //};
+
+            //var items = container.find("li");
+            //for (var i = 0; i < items.length; i++) {
+            //    listItem(items[i]);
+            //};
+
+        });
+
+
+
         //container.center()
         return container;
     }

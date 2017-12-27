@@ -6,5 +6,7 @@ namespace LightData.CMS.Controllers
     public class AccountController : SharedController
     {
         //UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
+
+        
     }
 }

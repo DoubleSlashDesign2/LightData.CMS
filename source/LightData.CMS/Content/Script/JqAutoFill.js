@@ -21,16 +21,7 @@
         dataContainer.hide();
         container.append(dataContainer);
         container.append("<div class='arrowContainer'><div class='arrow'></div></div>");
-        setTimeout(function () {
-            //container.find("input").css({
-            //    width: (container.find("input").width() - container.find(".arrowContainer").width())
-            //});
-            var offset = container.parent()[0].getBoundingClientRect();
-            container.find(".arrowContainer").css({
-                left: offset.width - (16 * 2),
-                top: 6
-            });
-        }, 1);
+
 
         container.select = function (setValueOnly) {
             if (!settings.selectedItem) {
@@ -64,7 +55,11 @@
         }
 
         container.render = function (data, isFocus, setDataOnly) {
-
+            var offset = container.find("input")[0].getBoundingClientRect();
+            container.find(".arrowContainer").css({
+                left: (offset.width - container.find(".arrowContainer").width()) + 4,
+                top: 6
+            });
             if (!data)
                 return;
 
@@ -78,7 +73,7 @@
             data = $.grep(data, function (a, i) { return (isFocus || (a[settings.textField] && a[settings.textField].toString().toLowerCase().indexOf(value.toLowerCase()) !== -1)) && i <= 300 });
             dataContainer.html("");
             if (settings.additionalValues)
-                $.each(settings.additionalValues, function () { data.unshift(this)});
+                $.each(settings.additionalValues, function () { data.unshift(this) });
             $.each(data, function () {
                 var item = this;
 
@@ -124,7 +119,7 @@
                 dataContainer.css({
                     top: offset.top + offset.height,
                     left: offset.left,
-                    "min-width": offset.width - container.find(".arrowContainer").outerWidth(true) -24,
+                    "min-width": offset.width - container.find(".arrowContainer").outerWidth(true) - 24,
                     position: "fixed"
                 });
                 dataContainer.show("fast");
@@ -139,7 +134,7 @@
                 clearTimeout(timeOut);
             timeOut = setTimeout(function () {
                 if (settings.datasource && settings.datasource.length > 0)
-                    container.render(settings.datasource);
+                    container.render(settings.datasource, isFocus);
 
                 if (!settings.ajaxUrl)
                     return;
@@ -281,8 +276,17 @@
 
         }
         container.bind();
+        setTimeout(function () {
+            var offset = container.find("input")[0].getBoundingClientRect();
+            container.find(".arrowContainer").css({
+                left: (offset.width - container.find(".arrowContainer").width()) + 4,
+                top: 6
+            });
+        }, 150);
         if (settings.selectedValue)
             container.GetData(true, true);
+
+
         return container;
 
     };
