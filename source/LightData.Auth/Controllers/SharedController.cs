@@ -67,16 +67,17 @@ namespace LightData.Auth.Controllers
                 //doc.DropEmptyParagraphs = true;
                 //doc.CleanWord2000 = true;
                 //doc.QuoteAmpersands = true;
-                //doc.JoinStyles = false;
-                //doc.JoinClasses = false;
+                doc.JoinStyles = true;
+                doc.JoinClasses = true;
+                doc.WrapAttributeValues = true;
                 doc.Markup = true;
-                doc.IndentSpaces = 4;
+                doc.IndentSpaces = 10;
                 //doc.IndentBlockElements = TidyManaged.AutoBool.Yes;
                 doc.CharacterEncoding = TidyManaged.EncodingType.Utf8;
                 //doc.WrapSections = false;
                 //doc.WrapAttributeValues = false;
                 //doc.WrapScriptLiterals = false;
-                //doc.WrapAt = 0;
+                doc.WrapAt = 0;
                 doc.OutputBodyOnly = AutoBool.Yes;
                 doc.CleanAndRepair();
                 return Content(doc.Save());
@@ -86,13 +87,14 @@ namespace LightData.Auth.Controllers
             }
         }
 
-        public ActionResult Css(string path)
+        public ActionResult LoadFiles(int fileId)
         {
-            path = Server.UrlDecode(path);
-            Response.ContentType = "text/css";
-            var files = LightData.CMS.Modules.Helper.Methods.GetTheme("css");
-            var file = System.IO.File.ReadAllBytes(files.First(x => x == path));
-            return new FileStreamResult(new System.IO.MemoryStream(file), "text/css");
+            var file = AuthSettings.GetFileById(fileId).First();
+            var contentType = "text/css";
+            if (file.FileType == CMS.Modules.Helper.EnumHelper.AllowedFiles.JAVASCRIPT)
+                contentType = "text/javascript";
+            Response.ContentType = contentType;
+            return new FileStreamResult(new System.IO.MemoryStream(file.File), contentType);
         }
     }
 }

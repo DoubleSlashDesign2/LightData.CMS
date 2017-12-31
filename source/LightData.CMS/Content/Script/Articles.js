@@ -8,7 +8,8 @@
             allchecked: false,
             autoFillMenusDataUrl: undefined,
             themeUrl: undefined,
-            cssTheme: undefined
+            cssTheme: undefined,
+            getFoldersAutoFill: undefined
         }, options);
         var container = $(this);
 
@@ -47,7 +48,7 @@
 
         container.save = function (item) {
             if (!item)
-                item = { articleName: "", metaKeywords: [], published: false, articleNodes: [], MenusId: 0 }
+                item = { articleName: "", metaKeywords: [], published: false, articleNodes: [], MenusId: 0, folder_Id: null, theme: "" }
             var dialog = undefined;
             var editContainer = $("<div class='inputContainer'></div>");
             var tabControl = editContainer.tabs({
@@ -66,6 +67,8 @@
             tabBasicValues.content.append("<input type='checkbox' class='chkPublished' checkType='Yes,NO' label='Publish' />");
             tabBasicValues.content.append("<label>Choose Menu:</label>");
             tabBasicValues.content.append("<input type='text' class='txtMenus' value='None' />");
+            tabBasicValues.content.append("<label>Choose Theme:</label>");
+            tabBasicValues.content.append("<input type='text' class='txtTheme' selectedValue='" + (!item.folder_Id ? 0 : item.folder_Id) + "' value='" + (!item.folder_Id ? "None" : item.theme.name) + "' />");
 
             tabBasicValues.content.find(".chkPublished").prop("checked", item.published && item.published === true);
             tabBasicValues.content.find(".txtMenus").autoFill({
@@ -75,6 +78,22 @@
                 selectedValue: item.MenusId,
                 hideValues: undefined,
                 additionalValues: [{ displayName: "None", id: "" }]
+            });
+
+            tabBasicValues.content.find(".txtTheme").autoFill({
+                ajaxUrl: settings.getFoldersAutoFill,
+                textField: "name",
+                valueField: "id",
+                additionalValues: [{ name: "None", id: 0 }],
+                onSelect: function (op) {
+                    if (op.selectedItem.id > 0) {
+                        item.folder = op.selectedItem;
+                        item.folder_Id = op.selectedItem.id;
+
+                    } else
+                        item.folder = null;
+                    item.folder_Id = null;
+                }
             });
 
             var countries = base.getActiveCountries();
@@ -139,6 +158,7 @@
                                             folderDeleteUri: settings.folderDeleteUri,
                                             getImageUri: settings.getImageFullUri,
                                             saveFileItemUri: settings.saveFileItemUri,
+                                            allowedFiles: ["PNG", "GIF", "JPEG", "JPG"],
                                             onInsert: function (img) {
                                                 try {
                                                     item.image(img);

@@ -16,12 +16,18 @@
     @Scripts.Render("~/bundles/jquery")
 
 
-
-    @foreach (var file in LightData.CMS.Modules.Helper.Methods.GetTheme("css"))
+    @foreach (var file in new LightData.CMS.Modules.Repository.Repository().Get<LightData.CMS.Modules.Library.FileItem>().Where(x =>
+     x.FileType == LightData.CMS.Modules.Helper.EnumHelper.AllowedFiles.CSS || x.FileType == LightData.CMS.Modules.Helper.EnumHelper.AllowedFiles.JAVASCRIPT).Execute())
     {
-        <link class="ExternalCss" href='@Url.Action("Css", "FileUploader", new { }, this.Request.Url.Scheme)?path=@HttpContext.Current.Server.UrlEncode(file)' rel="stylesheet" />
+        if (file.FileType.ToString() == "JAVASCRIPT")
+        {
+            <script type="text/javascript" src='@Url.Action("LoadFiles", "FileUploader", new { }, this.Request.Url.Scheme)?fileId=@file.Id'></script>
+        }
+        else
+        {
+            <link class="ExternalCss" href='@Url.Action("LoadFiles", "FileUploader", new { }, this.Request.Url.Scheme)?fileId=@file.Id' rel="stylesheet" />
+        }
     }
-
 
     <title>@ViewBag.Title</title>
 
@@ -120,7 +126,7 @@
                 datasource: [
                     {
                         id: 1,
-                        uri: "/Article/index",
+                        uri: "/CMS/Article/index",
                         displayName: "Manage Articles",
                         children: [
                             {
@@ -145,8 +151,13 @@
                     },
                     {
                         id: 1,
-                        uri: "#",
-                        displayName: "Create Menus"
+                        uri: "/CMS/fileuploader",
+                        displayName: "Manage Theme Files",
+                        children: [{
+                            id: 5,
+                            uri: "/CMS/Slider/index",
+                            displayName: "Manage Slider"
+                        }]
                     },
                     {
                         id: 1,
@@ -167,5 +178,7 @@
         deleteUri: '@Url.Action("Delete", "Menus")'
     });
     </script>
+
 </body>
+
 </html>

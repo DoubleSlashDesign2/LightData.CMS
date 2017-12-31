@@ -31,7 +31,10 @@
                 return;
             }
             settings.error(e, m);
-            alert(e);
+            $("body").dialog({
+                content: "<p class='error'>Something went wrong, please contact the administrator if it happened again</p>"
+            }).show();
+            //alert(e);
         }
 
         $.ajax(clonedSettings);

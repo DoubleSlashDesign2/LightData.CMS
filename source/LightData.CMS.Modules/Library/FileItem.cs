@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Text;
 using EntityWorker.Core.Attributes;
 using EntityWorker.Core.Object.Library;
+using LightData.CMS.Modules.Helper;
 using Newtonsoft.Json;
 
 namespace LightData.CMS.Modules.Library
@@ -8,7 +10,7 @@ namespace LightData.CMS.Modules.Library
     [Table("FileItems")]
     public class FileItem : DbEntity
     {
-        [ForeignKey(typeof(Folder), "Folder")]
+        [ForeignKey(typeof(Folder))]
         public long Folder_Id { get; set; }
 
         [IndependentData]
@@ -22,7 +24,8 @@ namespace LightData.CMS.Modules.Library
         /// <summary>
         /// PDF, PNG, JPG....
         /// </summary>
-        public string FileType { get; set; }
+        [StringFy]
+        public EnumHelper.AllowedFiles FileType { get; set; }
 
         /// <summary>
         /// File content
@@ -49,6 +52,26 @@ namespace LightData.CMS.Modules.Library
         public string BorderColor { get; set; }
 
         public int BorderWidth { get; set; }
+
+        private string _text;
+        [ExcludeFromAbstract]
+        public string Text
+        {
+            get
+            {
+                if (_text != null)
+                    return _text;
+                if (File != null && ( FileType == EnumHelper.AllowedFiles.CSS || FileType == EnumHelper.AllowedFiles.JAVASCRIPT))
+                {
+                    _text = Uri.EscapeDataString(Encoding.UTF8.GetString(File));
+                }
+                return _text;
+            }
+            set
+            {
+                _text = value;
+            }
+        }
 
         /// <summary>
         /// load file as 64bytes

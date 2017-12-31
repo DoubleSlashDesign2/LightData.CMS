@@ -14,47 +14,60 @@
             $(".contextMenu").remove();
             if (settings.onLoad)
                 settings.onLoad(settings);
-            var context = $("<div class='contextMenu'></div>");
+            var context = $("<ul class='contextMenu'></ul>");
             $.each(settings.dataSource, function () {
                 var x = this;
-                var div = $("<div class='contextItem'></div>");
+                var div = $("<li class='contextItem'></li>");
+                if (typeof x.text === "string")
+                    div.html($("<span>" + x.text + "</span>"));
+                else
+                    div.html($("<span></span>").append(x.text));
+
+                div.click(function () {
+                    if (settings.click)
+                        settings.click(x);
+                    context.remove();
+                });
+
                 function loadItem(item, parent) {
+                    var li = $("<li class='contextItem'></li>");
                     if (typeof item.text === "string")
-                        parent.html(item.text);
-                    else {
-                        parent.append(item.text);
-                        parent.parent().mouseover(function () {
-                            var offset = this.getBoundingClientRect();
-                            parent.css({ "width": $(item.text).width(), "height": $(item.text).height(), top: offset.top, left: offset.left + offset.width });
+                        li.html($("<span>" + item.text + "</span>"));
+                    else
+                        li.html($("<span></span>").append(item.text));
 
-                        });
-                    }
+                    li.click(function () {
+                        if (settings.click)
+                            settings.click(item);
+                        context.remove();
+                    });
 
-                    if (!item.children || item.children.length <= 0) {
-                        parent.click(function () {
-                            if (settings.click)
-                                settings.click(item);
-                            context.remove();
-                        });
-                    } else {
-                        var y = $("<div class='contextsubItem'></div>");
-                        parent.addClass("hasChildren")
-                        parent.append(y);
+                    if (item.children && item.children.length > 0) {
+                        parent.addClass("hasChildren");
+                        var y = $("<ul class='contextsubItem'></ul>");
+                        li.append(y);
                         $.each(item.children, function () {
                             loadItem(this, y);
                         });
-
                     }
+
+                    parent.append(li);
                 }
                 context.append(div);
-                loadItem(x, div);
+                if (x.children && x.children.length > 0)
+                    div.addClass("hasChildren");
+                $.each(x.children, function () {
+                    var y = $("<ul class='contextsubItem'></ul>");
+                    loadItem(this, y);
+                    div.append(y)
+                });
+
             });
             var iFrame = undefined;
             try {
                 iFrame = container.closest("html").parent();
                 if (iFrame.length <= 0)
                     iFrame = undefined;
-                //else iFrame = container.offset()
             } catch (ee) {
 
 
@@ -71,7 +84,7 @@
                 iFrame.find("body").append(context);
                 iFrame.find("body").mousedown(function (e) {
                     var target = $(e.target);
-                    if (!(target.hasClass("contextItem") || target.hasClass("contextMenu"))) {
+                    if (!(target.parent().hasClass("contextItem") || target.hasClass("contextItem") || target.hasClass("contextMenu"))) {
                         context.remove();
                         iFrame.find("body").find(".contextMenu").remove();
 
@@ -92,7 +105,7 @@
 
         $("body").mousedown(function (e) {
             var target = $(e.target);
-            if (!(target.hasClass("contextItem") || target.hasClass("contextMenu")))
+            if (!(target.parent().hasClass("contextItem") || target.hasClass("contextItem") || target.hasClass("contextMenu"))) 
                 $(".contextMenu").remove();
 
         });

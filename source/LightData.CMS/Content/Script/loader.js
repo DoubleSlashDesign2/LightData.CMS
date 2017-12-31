@@ -1,6 +1,5 @@
 ﻿(function ($) {
     $.fn.loader = function () {
-
         var container = $(this);
         var className = "LightDataTableLoader LightDataTableLoader" + $(".LightDataTableLoader").length;
         var loader = $("<div class='" + className + "'></div>");
@@ -12,13 +11,10 @@
         loader.append(canvas);
         container.Start = function () {
             container.append(loader);
-            $(canvas).center(true, container);
             var start = null;
             var duration = 3000;
             var boundaryIncrementer = duration / 6;
-
             function drawDivisionLoader(timestamp) {
-
                 // Timing Setup
                 if (!start) {
                     start = timestamp;
@@ -257,7 +253,9 @@
             }
 
             window.requestAnimationFrame(drawDivisionLoader);
-
+            $(canvas).center(true, loader);
+            loader.center(true, container);
+            //
             return container;
 
         }

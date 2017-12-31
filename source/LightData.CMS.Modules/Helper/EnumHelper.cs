@@ -18,7 +18,16 @@
             TopMenu,
             Menus,
             Footer
+        }
 
+        public enum AllowedFiles
+        {
+            PNG,
+            GIF,
+            JPEG,
+            JPG,
+            JAVASCRIPT,
+            CSS
         }
     }
 }

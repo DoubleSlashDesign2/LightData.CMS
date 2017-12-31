@@ -28,5 +28,11 @@ namespace LightData.CMS.Modules.Library
 
         // edited but not published yet
         public List<Article> ArticleTemp { get; set; }
+
+        //Theme
+        [ForeignKey(typeof(Folder))]
+        public long? Folder_Id { get; set; }
+
+        public Folder Theme { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace LightData.Auth.Helper
@@ -27,6 +29,13 @@ namespace LightData.Auth.Helper
         public static T SessionGet<T>(this string key)
         {
             return (T)HttpContext.Current.Session[key];
+        }
+
+        public static string ToJson(this object data)
+        {
+            var camelCaseFormatter = new JsonSerializerSettings();
+            camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            return JsonConvert.SerializeObject(data, Formatting.Indented, camelCaseFormatter);
         }
     }
 }

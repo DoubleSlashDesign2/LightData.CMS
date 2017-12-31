@@ -12,18 +12,20 @@
             container.append(menuContainer);
             function renderChildren(items, parent) {
                 $.each(items, function () {
-                    var li = $("<li menuId='" + this.id + "'></li>");
-                    li.append("<a href='" + this.uri + "'>" + this.displayName + "</a>");
-                    if (this.uri === null || this.uri.length <= 1)
-                        li.children("a").last().click(function () { return false; });
+                    if (this.publish == undefined || this.publish) {
+                        var li = $("<li menuId='" + this.id + "'></li>");
+                        li.append("<a href='" + this.uri + "'>" + this.displayName + "</a>");
+                        if (this.uri === null || this.uri.length <= 1)
+                            li.children("a").last().click(function () { return false; });
 
-                    if (this.children && this.children.length > 0) {
-                        li.append('<span class="dropRight"></span>');
-                        var ul = $("<ul></ul>");
-                        li.append(ul);
-                        renderChildren(this.children, ul);
+                        if (this.children && this.children.length > 0) {
+                            li.append('<span class="dropRight"></span>');
+                            var ul = $("<ul></ul>");
+                            li.append(ul);
+                            renderChildren(this.children, ul);
+                        }
+                        parent.append(li);
                     }
-                    parent.append(li);
                 });
             }
             $.each(settings.datasource, function () {
@@ -51,10 +53,10 @@
     $.fn.menumaker = function (options) {
 
         var cssmenu = $(this), settings = $.extend({
-                                   title: "Menu",
-                                   format: "dropdown",
-                                   sticky: false
-                               }, options);
+            title: "Menu",
+            format: "dropdown",
+            sticky: false
+        }, options);
 
         return this.each(function () {
             cssmenu.prepend('<div id="menu-button">' + settings.title + '</div>');

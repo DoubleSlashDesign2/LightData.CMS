@@ -276,7 +276,7 @@
 
         }
         container.bind();
-        setTimeout(function () {
+        setInterval(function () {
             var offset = container.find("input")[0].getBoundingClientRect();
             container.find(".arrowContainer").css({
                 left: (offset.width - container.find(".arrowContainer").width()) + 4,

@@ -9,11 +9,20 @@ using LightData.Auth.Helper;
 using System.Collections.Generic;
 using EntityWorker.Core.Helper;
 using System;
+using LightData.CMS.Modules.Helper;
+using System.Text;
 
 namespace LightData.CMS.Controllers
 {
     public class FileUploaderController : BaseController
     {
+        private const string jsIcon = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2IDU2IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1NiA1NjsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CjxnPgoJPHBhdGggc3R5bGU9ImZpbGw6I0U5RTlFMDsiIGQ9Ik0zNi45ODUsMEg3Ljk2M0M3LjE1NSwwLDYuNSwwLjY1NSw2LjUsMS45MjZWNTVjMCwwLjM0NSwwLjY1NSwxLDEuNDYzLDFoNDAuMDc0ICAgYzAuODA4LDAsMS40NjMtMC42NTUsMS40NjMtMVYxMi45NzhjMC0wLjY5Ni0wLjA5My0wLjkyLTAuMjU3LTEuMDg1TDM3LjYwNywwLjI1N0MzNy40NDIsMC4wOTMsMzcuMjE4LDAsMzYuOTg1LDB6Ii8+Cgk8cG9seWdvbiBzdHlsZT0iZmlsbDojRDlEN0NBOyIgcG9pbnRzPSIzNy41LDAuMTUxIDM3LjUsMTIgNDkuMzQ5LDEyICAiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiNFRUFGNEI7IiBkPSJNNDguMDM3LDU2SDcuOTYzQzcuMTU1LDU2LDYuNSw1NS4zNDUsNi41LDU0LjUzN1YzOWg0M3YxNS41MzdDNDkuNSw1NS4zNDUsNDguODQ1LDU2LDQ4LjAzNyw1NnoiLz4KCTxnPgoJCTxwYXRoIHN0eWxlPSJmaWxsOiNGRkZGRkY7IiBkPSJNMjYuMDIxLDQyLjcxOXY3Ljg0OGMwLDAuNDc0LTAuMDg3LDAuODczLTAuMjYsMS4xOTZjLTAuMTc0LDAuMzIzLTAuNDA2LDAuNTgzLTAuNjk3LDAuNzc5ICAgIGMtMC4yOTIsMC4xOTYtMC42MjcsMC4zMzMtMS4wMDUsMC40MXMtMC43NjksMC4xMTYtMS4xNjksMC4xMTZjLTAuMjAxLDAtMC40MzYtMC4wMjEtMC43MDQtMC4wNjJzLTAuNTQ3LTAuMTA0LTAuODM0LTAuMTkxICAgIHMtMC41NjMtMC4xODUtMC44MjctMC4yOTRjLTAuMjY1LTAuMTA5LTAuNDg4LTAuMjMyLTAuNjctMC4zNjlsMC42OTctMS4xMDdjMC4wOTEsMC4wNjMsMC4yMjEsMC4xMywwLjM5LDAuMTk4ICAgIHMwLjM1MywwLjEzMiwwLjU1NCwwLjE5MWMwLjIsMC4wNiwwLjQxLDAuMTExLDAuNjI5LDAuMTU3czAuNDI0LDAuMDY4LDAuNjE1LDAuMDY4YzAuNDgyLDAsMC44NjgtMC4wOTQsMS4xNTUtMC4yOCAgICBzMC40MzktMC41MDQsMC40NTgtMC45NXYtNy43MTFIMjYuMDIxeiIvPgoJCTxwYXRoIHN0eWxlPSJmaWxsOiNGRkZGRkY7IiBkPSJNMzQuMTg0LDUwLjIzOGMwLDAuMzY0LTAuMDc1LDAuNzE4LTAuMjI2LDEuMDZzLTAuMzYyLDAuNjQzLTAuNjM2LDAuOTAycy0wLjYxMSwwLjQ2Ny0xLjAxMiwwLjYyMiAgICBjLTAuNDAxLDAuMTU1LTAuODU3LDAuMjMyLTEuMzY3LDAuMjMyYy0wLjIxOSwwLTAuNDQ0LTAuMDEyLTAuNjc3LTAuMDM0cy0wLjQ2OC0wLjA2Mi0wLjcwNC0wLjExNiAgICBjLTAuMjM3LTAuMDU1LTAuNDYzLTAuMTMtMC42NzctMC4yMjZzLTAuMzk5LTAuMjEyLTAuNTU0LTAuMzQ5bDAuMjg3LTEuMTc2YzAuMTI3LDAuMDczLDAuMjg5LDAuMTQ0LDAuNDg1LDAuMjEyICAgIHMwLjM5OCwwLjEzMiwwLjYwOCwwLjE5MWMwLjIwOSwwLjA2LDAuNDE5LDAuMTA3LDAuNjI5LDAuMTQ0YzAuMjA5LDAuMDM2LDAuNDA1LDAuMDU1LDAuNTg4LDAuMDU1YzAuNTU2LDAsMC45ODItMC4xMywxLjI3OC0wLjM5ICAgIHMwLjQ0NC0wLjY0NSwwLjQ0NC0xLjE1NWMwLTAuMzEtMC4xMDUtMC41NzQtMC4zMTQtMC43OTNjLTAuMjEtMC4yMTktMC40NzItMC40MTctMC43ODYtMC41OTVzLTAuNjU0LTAuMzU1LTEuMDE5LTAuNTMzICAgIGMtMC4zNjUtMC4xNzgtMC43MDctMC4zODgtMS4wMjUtMC42MjljLTAuMzE5LTAuMjQxLTAuNTg0LTAuNTI2LTAuNzkzLTAuODU0Yy0wLjIxLTAuMzI4LTAuMzE0LTAuNzM4LTAuMzE0LTEuMjMgICAgYzAtMC40NDYsMC4wODItMC44NDMsMC4yNDYtMS4xODlzMC4zODUtMC42NDEsMC42NjMtMC44ODJzMC42MDItMC40MjYsMC45NzEtMC41NTRzMC43NTktMC4xOTEsMS4xNjktMC4xOTEgICAgYzAuNDE5LDAsMC44NDMsMC4wMzksMS4yNzEsMC4xMTZjMC40MjgsMC4wNzcsMC43NzQsMC4yMDMsMS4wMzksMC4zNzZjLTAuMDU1LDAuMTE4LTAuMTE5LDAuMjQ4LTAuMTkxLDAuMzkgICAgYy0wLjA3MywwLjE0Mi0wLjE0MiwwLjI3My0wLjIwNSwwLjM5NmMtMC4wNjQsMC4xMjMtMC4xMTksMC4yMjYtMC4xNjQsMC4zMDhjLTAuMDQ2LDAuMDgyLTAuMDczLDAuMTI4LTAuMDgyLDAuMTM3ICAgIGMtMC4wNTUtMC4wMjctMC4xMTYtMC4wNjMtMC4xODUtMC4xMDlzLTAuMTY3LTAuMDkxLTAuMjk0LTAuMTM3Yy0wLjEyOC0wLjA0Ni0wLjI5Ny0wLjA3Ny0wLjUwNi0wLjA5NiAgICBjLTAuMjEtMC4wMTktMC40NzktMC4wMTQtMC44MDcsMC4wMTRjLTAuMTgzLDAuMDE5LTAuMzU1LDAuMDctMC41MiwwLjE1N3MtMC4zMTEsMC4xOTMtMC40MzgsMC4zMjEgICAgYy0wLjEyOCwwLjEyOC0wLjIyOSwwLjI3MS0wLjMwMSwwLjQzMWMtMC4wNzMsMC4xNTktMC4xMDksMC4zMTMtMC4xMDksMC40NThjMCwwLjM2NCwwLjEwNCwwLjY1OCwwLjMxNCwwLjg4MiAgICBjMC4yMDksMC4yMjQsMC40NjksMC40MTksMC43NzksMC41ODhjMC4zMSwwLjE2OSwwLjY0NiwwLjMzMywxLjAxMiwwLjQ5MmMwLjM2NCwwLjE1OSwwLjcwNCwwLjM1NCwxLjAxOSwwLjU4MSAgICBzMC41NzYsMC41MTMsMC43ODYsMC44NTRDMzQuMDc4LDQ5LjI2MSwzNC4xODQsNDkuNywzNC4xODQsNTAuMjM4eiIvPgoJPC9nPgoJPGc+CgkJPHBhdGggc3R5bGU9ImZpbGw6I0VFQUY0QjsiIGQ9Ik0xOS41LDE5di00YzAtMC41NTEsMC40NDgtMSwxLTFjMC41NTMsMCwxLTAuNDQ4LDEtMXMtMC40NDctMS0xLTFjLTEuNjU0LDAtMywxLjM0Ni0zLDN2NCAgICBjMCwxLjEwMy0wLjg5NywyLTIsMmMtMC41NTMsMC0xLDAuNDQ4LTEsMXMwLjQ0NywxLDEsMWMxLjEwMywwLDIsMC44OTcsMiwydjRjMCwxLjY1NCwxLjM0NiwzLDMsM2MwLjU1MywwLDEtMC40NDgsMS0xICAgIHMtMC40NDctMS0xLTFjLTAuNTUyLDAtMS0wLjQ0OS0xLTF2LTRjMC0xLjItMC41NDItMi4yNjYtMS4zODItM0MxOC45NTgsMjEuMjY2LDE5LjUsMjAuMiwxOS41LDE5eiIvPgoJCTxjaXJjbGUgc3R5bGU9ImZpbGw6I0VFQUY0QjsiIGN4PSIyNy41IiBjeT0iMTguNSIgcj0iMS41Ii8+CgkJPHBhdGggc3R5bGU9ImZpbGw6I0VFQUY0QjsiIGQ9Ik0zOS41LDIxYy0xLjEwMywwLTItMC44OTctMi0ydi00YzAtMS42NTQtMS4zNDYtMy0zLTNjLTAuNTUzLDAtMSwwLjQ0OC0xLDFzMC40NDcsMSwxLDEgICAgYzAuNTUyLDAsMSwwLjQ0OSwxLDF2NGMwLDEuMiwwLjU0MiwyLjI2NiwxLjM4MiwzYy0wLjg0LDAuNzM0LTEuMzgyLDEuOC0xLjM4MiwzdjRjMCwwLjU1MS0wLjQ0OCwxLTEsMWMtMC41NTMsMC0xLDAuNDQ4LTEsMSAgICBzMC40NDcsMSwxLDFjMS42NTQsMCwzLTEuMzQ2LDMtM3YtNGMwLTEuMTAzLDAuODk3LTIsMi0yYzAuNTUzLDAsMS0wLjQ0OCwxLTFTNDAuMDUzLDIxLDM5LjUsMjF6Ii8+CgkJPHBhdGggc3R5bGU9ImZpbGw6I0VFQUY0QjsiIGQ9Ik0yNy41LDI0Yy0wLjU1MywwLTEsMC40NDgtMSwxdjNjMCwwLjU1MiwwLjQ0NywxLDEsMXMxLTAuNDQ4LDEtMXYtMyAgICBDMjguNSwyNC40NDgsMjguMDUzLDI0LDI3LjUsMjR6Ii8+Cgk8L2c+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==";
+        private const string cssIcon = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU2IDU2IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1NiA1NjsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CjxnPgoJPHBhdGggc3R5bGU9ImZpbGw6I0U5RTlFMDsiIGQ9Ik0zNi45ODUsMEg3Ljk2M0M3LjE1NSwwLDYuNSwwLjY1NSw2LjUsMS45MjZWNTVjMCwwLjM0NSwwLjY1NSwxLDEuNDYzLDFoNDAuMDc0ICAgYzAuODA4LDAsMS40NjMtMC42NTUsMS40NjMtMVYxMi45NzhjMC0wLjY5Ni0wLjA5My0wLjkyLTAuMjU3LTEuMDg1TDM3LjYwNywwLjI1N0MzNy40NDIsMC4wOTMsMzcuMjE4LDAsMzYuOTg1LDB6Ii8+Cgk8cG9seWdvbiBzdHlsZT0iZmlsbDojRDlEN0NBOyIgcG9pbnRzPSIzNy41LDAuMTUxIDM3LjUsMTIgNDkuMzQ5LDEyICAiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiMwMDk2RTY7IiBkPSJNNDguMDM3LDU2SDcuOTYzQzcuMTU1LDU2LDYuNSw1NS4zNDUsNi41LDU0LjUzN1YzOWg0M3YxNS41MzdDNDkuNSw1NS4zNDUsNDguODQ1LDU2LDQ4LjAzNyw1NnoiLz4KCTxnPgoJCTxwYXRoIHN0eWxlPSJmaWxsOiNGRkZGRkY7IiBkPSJNMjMuNTgsNTEuOTc1Yy0wLjM3NCwwLjM2NC0wLjc5OCwwLjYzOC0xLjI3MSwwLjgycy0wLjk4NCwwLjI3My0xLjUzMSwwLjI3MyAgICBjLTAuNjAyLDAtMS4xNTUtMC4xMDktMS42NjEtMC4zMjhzLTAuOTQ4LTAuNTQyLTEuMzI2LTAuOTcxcy0wLjY3NS0wLjk2Ni0wLjg4OS0xLjYxM2MtMC4yMTQtMC42NDctMC4zMjEtMS4zOTUtMC4zMjEtMi4yNDIgICAgczAuMTA3LTEuNTkzLDAuMzIxLTIuMjM1YzAuMjE0LTAuNjQzLDAuNTExLTEuMTc4LDAuODg5LTEuNjA2czAuODIyLTAuNzU0LDEuMzMzLTAuOTc4czEuMDYyLTAuMzM1LDEuNjU0LTAuMzM1ICAgIGMwLjU0NywwLDEuMDU4LDAuMDkxLDEuNTMxLDAuMjczczAuODk3LDAuNDU2LDEuMjcxLDAuODJsLTEuMTM1LDEuMDEyYy0wLjIyOC0wLjI2NS0wLjQ4LTAuNDU2LTAuNzU5LTAuNTc0ICAgIHMtMC41NjctMC4xNzgtMC44NjgtMC4xNzhjLTAuMzM3LDAtMC42NTgsMC4wNjMtMC45NjQsMC4xOTFzLTAuNTc5LDAuMzQ0LTAuODIsMC42NDlzLTAuNDMxLDAuNjk5LTAuNTY3LDEuMTgzICAgIHMtMC4yMSwxLjA3NS0wLjIxOSwxLjc3N2MwLjAwOSwwLjY4NCwwLjA4LDEuMjY3LDAuMjEyLDEuNzVzMC4zMTQsMC44NzcsMC41NDcsMS4xODNzMC40OTcsMC41MjgsMC43OTMsMC42NyAgICBzMC42MDgsMC4yMTIsMC45MzcsMC4yMTJzMC42MzYtMC4wNiwwLjkyMy0wLjE3OHMwLjU0OS0wLjMxLDAuNzg2LTAuNTc0TDIzLjU4LDUxLjk3NXoiLz4KCQk8cGF0aCBzdHlsZT0iZmlsbDojRkZGRkZGOyIgZD0iTTMxLjYzMyw1MC4yMzhjMCwwLjM2NC0wLjA3NSwwLjcxOC0wLjIyNiwxLjA2cy0wLjM2MiwwLjY0My0wLjYzNiwwLjkwMnMtMC42MSwwLjQ2Ny0xLjAxMiwwLjYyMiAgICBzLTAuODU2LDAuMjMyLTEuMzY3LDAuMjMyYy0wLjIxOSwwLTAuNDQ0LTAuMDEyLTAuNjc3LTAuMDM0cy0wLjQ2Ny0wLjA2Mi0wLjcwNC0wLjExNnMtMC40NjMtMC4xMy0wLjY3Ny0wLjIyNiAgICBzLTAuMzk4LTAuMjEyLTAuNTU0LTAuMzQ5bDAuMjg3LTEuMTc2YzAuMTI4LDAuMDczLDAuMjg5LDAuMTQ0LDAuNDg1LDAuMjEyczAuMzk4LDAuMTMyLDAuNjA4LDAuMTkxczAuNDE5LDAuMTA3LDAuNjI5LDAuMTQ0ICAgIHMwLjQwNSwwLjA1NSwwLjU4OCwwLjA1NWMwLjU1NiwwLDAuOTgyLTAuMTMsMS4yNzgtMC4zOXMwLjQ0NC0wLjY0NSwwLjQ0NC0xLjE1NWMwLTAuMzEtMC4xMDQtMC41NzQtMC4zMTQtMC43OTMgICAgcy0wLjQ3Mi0wLjQxNy0wLjc4Ni0wLjU5NXMtMC42NTQtMC4zNTUtMS4wMTktMC41MzNzLTAuNzA2LTAuMzg4LTEuMDI1LTAuNjI5cy0wLjU4My0wLjUyNi0wLjc5My0wLjg1NHMtMC4zMTQtMC43MzgtMC4zMTQtMS4yMyAgICBjMC0wLjQ0NiwwLjA4Mi0wLjg0MywwLjI0Ni0xLjE4OXMwLjM4NS0wLjY0MSwwLjY2My0wLjg4MnMwLjYwMi0wLjQyNiwwLjk3MS0wLjU1NHMwLjc1OS0wLjE5MSwxLjE2OS0wLjE5MSAgICBjMC40MTksMCwwLjg0MywwLjAzOSwxLjI3MSwwLjExNnMwLjc3NCwwLjIwMywxLjAzOSwwLjM3NmMtMC4wNTUsMC4xMTgtMC4xMTgsMC4yNDgtMC4xOTEsMC4zOXMtMC4xNDIsMC4yNzMtMC4yMDUsMC4zOTYgICAgYy0wLjA2MywwLjEyMy0wLjExOCwwLjIyNi0wLjE2NCwwLjMwOHMtMC4wNzMsMC4xMjgtMC4wODIsMC4xMzdjLTAuMDU1LTAuMDI3LTAuMTE2LTAuMDYzLTAuMTg1LTAuMTA5cy0wLjE2Ni0wLjA5MS0wLjI5NC0wLjEzNyAgICBzLTAuMjk2LTAuMDc3LTAuNTA2LTAuMDk2cy0wLjQ3OS0wLjAxNC0wLjgwNywwLjAxNGMtMC4xODMsMC4wMTktMC4zNTUsMC4wNy0wLjUyLDAuMTU3cy0wLjMxLDAuMTkzLTAuNDM4LDAuMzIxICAgIHMtMC4yMjgsMC4yNzEtMC4zMDEsMC40MzFzLTAuMTA5LDAuMzEzLTAuMTA5LDAuNDU4YzAsMC4zNjQsMC4xMDQsMC42NTgsMC4zMTQsMC44ODJzMC40NywwLjQxOSwwLjc3OSwwLjU4OCAgICBzMC42NDcsMC4zMzMsMS4wMTIsMC40OTJzMC43MDQsMC4zNTQsMS4wMTksMC41ODFzMC41NzYsMC41MTMsMC43ODYsMC44NTRTMzEuNjMzLDQ5LjcsMzEuNjMzLDUwLjIzOHoiLz4KCQk8cGF0aCBzdHlsZT0iZmlsbDojRkZGRkZGOyIgZD0iTTM5LjA0Myw1MC4yMzhjMCwwLjM2NC0wLjA3NSwwLjcxOC0wLjIyNiwxLjA2cy0wLjM2MiwwLjY0My0wLjYzNiwwLjkwMnMtMC42MSwwLjQ2Ny0xLjAxMiwwLjYyMiAgICBzLTAuODU2LDAuMjMyLTEuMzY3LDAuMjMyYy0wLjIxOSwwLTAuNDQ0LTAuMDEyLTAuNjc3LTAuMDM0cy0wLjQ2Ny0wLjA2Mi0wLjcwNC0wLjExNnMtMC40NjMtMC4xMy0wLjY3Ny0wLjIyNiAgICBzLTAuMzk4LTAuMjEyLTAuNTU0LTAuMzQ5bDAuMjg3LTEuMTc2YzAuMTI4LDAuMDczLDAuMjg5LDAuMTQ0LDAuNDg1LDAuMjEyczAuMzk4LDAuMTMyLDAuNjA4LDAuMTkxczAuNDE5LDAuMTA3LDAuNjI5LDAuMTQ0ICAgIHMwLjQwNSwwLjA1NSwwLjU4OCwwLjA1NWMwLjU1NiwwLDAuOTgyLTAuMTMsMS4yNzgtMC4zOXMwLjQ0NC0wLjY0NSwwLjQ0NC0xLjE1NWMwLTAuMzEtMC4xMDQtMC41NzQtMC4zMTQtMC43OTMgICAgcy0wLjQ3Mi0wLjQxNy0wLjc4Ni0wLjU5NXMtMC42NTQtMC4zNTUtMS4wMTktMC41MzNzLTAuNzA2LTAuMzg4LTEuMDI1LTAuNjI5cy0wLjU4My0wLjUyNi0wLjc5My0wLjg1NHMtMC4zMTQtMC43MzgtMC4zMTQtMS4yMyAgICBjMC0wLjQ0NiwwLjA4Mi0wLjg0MywwLjI0Ni0xLjE4OXMwLjM4NS0wLjY0MSwwLjY2My0wLjg4MnMwLjYwMi0wLjQyNiwwLjk3MS0wLjU1NHMwLjc1OS0wLjE5MSwxLjE2OS0wLjE5MSAgICBjMC40MTksMCwwLjg0MywwLjAzOSwxLjI3MSwwLjExNnMwLjc3NCwwLjIwMywxLjAzOSwwLjM3NmMtMC4wNTUsMC4xMTgtMC4xMTgsMC4yNDgtMC4xOTEsMC4zOXMtMC4xNDIsMC4yNzMtMC4yMDUsMC4zOTYgICAgcy0wLjExOCwwLjIyNi0wLjE2NCwwLjMwOHMtMC4wNzMsMC4xMjgtMC4wODIsMC4xMzdjLTAuMDU1LTAuMDI3LTAuMTE2LTAuMDYzLTAuMTg1LTAuMTA5cy0wLjE2Ni0wLjA5MS0wLjI5NC0wLjEzNyAgICBzLTAuMjk2LTAuMDc3LTAuNTA2LTAuMDk2cy0wLjQ3OS0wLjAxNC0wLjgwNywwLjAxNGMtMC4xODMsMC4wMTktMC4zNTUsMC4wNy0wLjUyLDAuMTU3cy0wLjMxLDAuMTkzLTAuNDM4LDAuMzIxICAgIHMtMC4yMjgsMC4yNzEtMC4zMDEsMC40MzFzLTAuMTA5LDAuMzEzLTAuMTA5LDAuNDU4YzAsMC4zNjQsMC4xMDQsMC42NTgsMC4zMTQsMC44ODJzMC40NywwLjQxOSwwLjc3OSwwLjU4OCAgICBzMC42NDcsMC4zMzMsMS4wMTIsMC40OTJzMC43MDQsMC4zNTQsMS4wMTksMC41ODFzMC41NzYsMC41MTMsMC43ODYsMC44NTRTMzkuMDQzLDQ5LjcsMzkuMDQzLDUwLjIzOHoiLz4KCTwvZz4KCTxnPgoJCTxwYXRoIHN0eWxlPSJmaWxsOiMwMDk2RTY7IiBkPSJNMTkuNSwxOXYtNGMwLTAuNTUxLDAuNDQ4LTEsMS0xYzAuNTUzLDAsMS0wLjQ0OCwxLTFzLTAuNDQ3LTEtMS0xYy0xLjY1NCwwLTMsMS4zNDYtMywzdjQgICAgYzAsMS4xMDMtMC44OTcsMi0yLDJjLTAuNTUzLDAtMSwwLjQ0OC0xLDFzMC40NDcsMSwxLDFjMS4xMDMsMCwyLDAuODk3LDIsMnY0YzAsMS42NTQsMS4zNDYsMywzLDNjMC41NTMsMCwxLTAuNDQ4LDEtMSAgICBzLTAuNDQ3LTEtMS0xYy0wLjU1MiwwLTEtMC40NDktMS0xdi00YzAtMS4yLTAuNTQyLTIuMjY2LTEuMzgyLTNDMTguOTU4LDIxLjI2NiwxOS41LDIwLjIsMTkuNSwxOXoiLz4KCQk8cGF0aCBzdHlsZT0iZmlsbDojMDA5NkU2OyIgZD0iTTM5LjUsMjFjLTEuMTAzLDAtMi0wLjg5Ny0yLTJ2LTRjMC0xLjY1NC0xLjM0Ni0zLTMtM2MtMC41NTMsMC0xLDAuNDQ4LTEsMXMwLjQ0NywxLDEsMSAgICBjMC41NTIsMCwxLDAuNDQ5LDEsMXY0YzAsMS4yLDAuNTQyLDIuMjY2LDEuMzgyLDNjLTAuODQsMC43MzQtMS4zODIsMS44LTEuMzgyLDN2NGMwLDAuNTUxLTAuNDQ4LDEtMSwxYy0wLjU1MywwLTEsMC40NDgtMSwxICAgIHMwLjQ0NywxLDEsMWMxLjY1NCwwLDMtMS4zNDYsMy0zdi00YzAtMS4xMDMsMC44OTctMiwyLTJjMC41NTMsMCwxLTAuNDQ4LDEtMVM0MC4wNTMsMjEsMzkuNSwyMXoiLz4KCTwvZz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K";
+
+        public ActionResult Index()
+        {
+            return View();
+        }
 
         [HttpGet]
         public ActionResult GetImage(long id)
@@ -23,10 +32,17 @@ namespace LightData.CMS.Controllers
         }
 
         [HttpPost]
-        public async Task<ExternalActionResult> GetFolders()
+        public async Task<ExternalActionResult> GetFolders(bool isTheme)
         {
-            var folders = await Repository.Get<Folder>().Where(x => x.Parent_Id == null).LoadChildren().ExecuteAsync();
+            var folders = await Repository.Get<Folder>().Where(x => !x.Parent_Id.HasValue && x.IsTheme == isTheme).LoadChildren().IgnoreChildren(x => x.Files).ExecuteAsync();
             return await folders.ToJsonResultAsync();
+        }
+
+        [HttpPost]
+        public ExternalActionResult GetFoldersAutoFill(string value)
+        {
+            var folders = Repository.Get<Folder>().Where(x => !x.Parent_Id.HasValue && x.IsTheme && x.Children.Any(a=> a.Name.Contains(value))).LoadChildren().IgnoreChildren(x => x.Files).Execute().FirstOrDefault()?.Children;
+            return folders.ToJsonResult();
         }
 
         [HttpPost]
@@ -40,31 +56,48 @@ namespace LightData.CMS.Controllers
         [HttpPost]
         public void DeleteFolder(long folderId)
         {
-            Repository.Get<Folder>().Where(x => x.Id == folderId).LoadChildren().Execute().ForEach(x => Repository.Delete(x));
+            Repository.Get<Folder>().Where(x => x.Id == folderId).LoadChildren().IgnoreChildren(x => x.Files.Select(a => a.Folder)).Execute().ForEach(x => Repository.Delete(x));
             Repository.SaveChanges();
         }
 
         [HttpPost]
         public async Task<ExternalActionResult> Get(int pageNr, long folderId)
         {
-            var files = await Repository.Get<FileItem>().Where(x => x.Folder_Id == folderId).Skip((pageNr - 1) * SearchResultValue).Take(SearchResultValue).OrderBy(x => x.FileName).LoadChildren(x => x.Folder).ExecuteAsync();
-
+            var files = await Repository.Get<FileItem>()
+               .Where(x => x.Folder_Id == folderId).Skip((pageNr - 1) * SearchResultValue)
+               .Take(SearchResultValue)
+               .OrderBy(x => x.FileName)
+               .LoadChildren(x => x.Folder).IgnoreChildren(x => x.Folder.Files)
+               .ExecuteAsync();
             return await files.ToJsonResultAsync();
         }
 
         [HttpPost]
         public void Delete(List<long> items)
         {
-            items.ForEach(a => Repository.Get<FileItem>().LoadChildren().Where(x => x.Id == a).Remove());
+            items.ForEach(a => Repository.Get<FileItem>().Where(x => x.Id == a).Remove());
             Repository.SaveChanges();
         }
 
         [HttpPost]
         public void SaveFileItem(FileItem file)
         {
-            var id = file.Id;
-            var item = Repository.Get<FileItem>().Where(x => x.Id == id).Execute().First();
+            var item = file.Id > 0 ? Repository.Get<FileItem>().Where(x => x.Id == file.Id).Execute().First() : file;
             item.FileName = file.FileName;
+            item.Folder_Id = file.Folder_Id;
+            if ((file.FileType == EnumHelper.AllowedFiles.JAVASCRIPT || file.FileType == EnumHelper.AllowedFiles.CSS))
+            {
+                if (file.FileType == EnumHelper.AllowedFiles.CSS)
+                    item.ThumpFile = Convert.FromBase64String(cssIcon);
+                else item.ThumpFile = Convert.FromBase64String(jsIcon);
+                if (file.Text != null)
+                {
+                    item.Text = HttpUtility.UrlDecode(file.Text);
+                    item.File = Encoding.UTF8.GetBytes(item.Text);
+                }
+            }
+            if (item.File == null)
+                item.File = new byte[0];
             Repository.Save(item);
             Repository.SaveChanges();
         }
@@ -98,23 +131,30 @@ namespace LightData.CMS.Controllers
                 {
 
                     file.InputStream.CopyTo(mem);
-                    System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(mem);
-                    System.Drawing.Image newImage = fullsizeImage.GetThumbnailImage(32, 32, null, IntPtr.Zero);
-                    using (var imgMem = new MemoryStream())
+                    if (fname.EndsWith(EnumHelper.AllowedFiles.PNG.ToString(), StringComparison.CurrentCultureIgnoreCase)
+                        || fname.EndsWith(EnumHelper.AllowedFiles.GIF.ToString(), StringComparison.CurrentCultureIgnoreCase)
+                        || fname.EndsWith(EnumHelper.AllowedFiles.JPEG.ToString(), StringComparison.CurrentCultureIgnoreCase)
+                        || fname.EndsWith(EnumHelper.AllowedFiles.JPG.ToString(), StringComparison.CurrentCultureIgnoreCase))
                     {
-                        newImage.Save(imgMem, System.Drawing.Imaging.ImageFormat.Png);
-                        fileItems.Add(new FileItem()
+                        System.Drawing.Image fullsizeImage = System.Drawing.Image.FromStream(mem);
+                        System.Drawing.Image newImage = fullsizeImage.GetThumbnailImage(32, 32, null, IntPtr.Zero);
+                        using (var imgMem = new MemoryStream())
                         {
-                            File = mem.ToArray(),
-                            Length = file.ContentLength,
-                            FileType = file.FileName.Split('.').ToList().Last().ToLower(),
-                            FileName = fname,
-                            Folder_Id = folderId.ConvertValue<long>(),
-                            ThumpFile = imgMem.ToArray(),
-                            Width = fullsizeImage.Width,
-                            Height = fullsizeImage.Height
-                        });
+                            newImage.Save(imgMem, System.Drawing.Imaging.ImageFormat.Png);
+                            fileItems.Add(new FileItem()
+                            {
+                                File = mem.ToArray(),
+                                Length = file.ContentLength,
+                                FileType = file.FileName.Split('.').ToList().Last().ToUpper().ConvertValue<EnumHelper.AllowedFiles>(),
+                                FileName = fname,
+                                Folder_Id = folderId.ConvertValue<long>(),
+                                ThumpFile = imgMem.ToArray(),
+                                Width = fullsizeImage.Width,
+                                Height = fullsizeImage.Height
+                            });
+                        }
                     }
+
                 }
             }
             fileItems.Save();

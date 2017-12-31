@@ -157,6 +157,7 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Base\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -189,6 +190,10 @@
     <ProjectReference Include="..\..\..\EntityWorker.Core\Source\EntityWorker.Core.csproj">
       <Project>{32f63d38-7866-472e-a695-a699502889d2}</Project>
       <Name>EntityWorker.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LightData.Auth\LightData.Auth.csproj">
+      <Project>{b6bc282d-4c06-4e48-9700-9ed17a82c7e4}</Project>
+      <Name>LightData.Auth</Name>
     </ProjectReference>
     <ProjectReference Include="..\LightData.CMS.Modules\LightData.CMS.Modules.csproj">
       <Project>{3ddf3ef8-5aef-4204-8699-07719bcf0ec2}</Project>

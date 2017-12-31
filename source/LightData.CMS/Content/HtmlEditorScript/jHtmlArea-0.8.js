@@ -72,10 +72,19 @@
                 var opts = $.extend({}, jHtmlArea.defaultOptions, options);
                 elem.jhtmlareaObject = this;
 
+
                 var textarea = this.textarea = $(elem);
                 var container = this.container = $("<div/>").addClass("jHtmlArea").width(textarea.width()).insertAfter(textarea);
 
+       
+
                 var toolbar = this.toolbar = $("<div/>").addClass("ToolBar").appendTo(container);
+                this.codeMirror = CodeMirror.fromTextArea(this.textarea[0], {
+                    lineNumbers: true,
+                    mode: "htmlmixed",
+                    theme: "night",
+
+                });
                 priv.initToolBar.call(this, opts);
 
                 var iframe = this.iframe = $("<iframe/>").height(textarea.height());
@@ -89,13 +98,17 @@
 
                 // Fix total height to match TextArea
                 iframe.height(iframe.height() - toolbar.height());
+               
                 toolbar.width(textarea.width());
                 var css = $(".ExternalCss");
                 css.each(function () {
                     elem.jhtmlareaObject.find("head").append($(this).clone());
                 });
-
+        
+                this.codeMirror.setSize(this.textarea.width(), iframe.height() - toolbar.height());
                 if (opts.loaded) { opts.loaded.call(this); }
+
+                $(".CodeMirror").hide();
             }
         },
         dispose: function () {
@@ -162,7 +175,8 @@
         },
         html: function (v) {
             if (v !== undefined) {
-                this.textarea.val(v);
+                this.codeMirror.setValue(v);
+                //this.textarea.val(v);
                 this.updateHtmlArea();
             } else {
                 return this.toHtmlString();
@@ -308,11 +322,14 @@
                 $.ajax({
                     contentType: "application/json; charset=utf-8",
                     type: "POST",
-                    data: JSON.stringify({ html: encodeURIComponent(this.textarea.val()) }),
+                    data: JSON.stringify({ html: encodeURIComponent(this.codeMirror.getValue()) }),
                     url: globalSettings.htmlFormater,
                     success: function (data) {
+                        $(".CodeMirror").show();
+                        item.codeMirror.setValue(data);
                         $(item.textarea).val(data);
-                        item.textarea.show();
+                        //item.textarea.show();
+
                         item.htmlarea.hide();
                         $("ul li:not(li:has(a.html))", item.toolbar).hide();
                         $("ul:not(:has(:visible))", item.toolbar).hide();
@@ -320,7 +337,8 @@
                     }
                 });
             } else {
-                this.textarea.show();
+                //this.textarea.show();
+                $(".CodeMirror").show();
                 this.htmlarea.hide();
                 $("ul li:not(li:has(a.html))", this.toolbar).hide();
                 $("ul:not(:has(:visible))", this.toolbar).hide();
@@ -331,12 +349,15 @@
         hideHTMLView: function () {
             this.updateHtmlArea();
             this.textarea.hide();
+            $(".CodeMirror").hide();
             this.htmlarea.show();
             $("ul", this.toolbar).show();
             $("ul li", this.toolbar).show().find("a.html").removeClass("highlighted");
         },
         toggleHTMLView: function () {
-            (this.textarea.is(":hidden")) ? this.showHTMLView() : this.hideHTMLView();
+            //(this.textarea.is(":hidden")) ? this.showHTMLView() : this.hideHTMLView();
+            ($(".CodeMirror").is(":hidden")) ? this.showHTMLView() : this.hideHTMLView();
+
         },
 
         toHtmlString: function () {
@@ -347,7 +368,8 @@
         },
 
         updateTextArea: function () {
-            this.textarea.val(this.toHtmlString());
+            //this.textarea.val(this.toHtmlString());
+            this.codeMirror.setValue(this.toHtmlString());
             var tables = this.find("table");
             var JHtml = this.editor.priv().toolbarButtons;
             var $this = this;
@@ -377,7 +399,8 @@
                         click: function (item) {
                             if (item.text == "Properties") {
                                 $("body").files({
-                                    imageProperties: item.item
+                                    imageProperties: item.item,
+                                    allowedFiles: ["PNG", "GIF", "JPEG"]
                                 });
                             } else item.item.remove();
                         }
@@ -386,7 +409,7 @@
             }
         },
         updateHtmlArea: function () {
-            this.editor.body.innerHTML = this.textarea.val();
+            this.editor.body.innerHTML = this.codeMirror.getValue();
 
         }
     };

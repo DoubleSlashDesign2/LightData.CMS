@@ -27,16 +27,12 @@
 
     .contextMenu .contextsubItem {
         position: fixed;
-        /* top: -1px; */
-        /* left: 100%; */
-        /* right: 0px; */
         border: 1px solid #CCC;
         padding-left: 5px;
         width: 86%;
         display: none;
         padding: 12px;
         margin-top: -1px;
-        /* margin-left: 25px; */
         z-index: 9999;
     }
 

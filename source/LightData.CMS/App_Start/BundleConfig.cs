@@ -25,7 +25,11 @@ namespace LightData.CMS
                 .Include("~/Content/Styles/Tabs.css")
                 .Include("~/Content/Styles/FileUploader.css")
                 .Include("~/Content/Styles/colorpicker.css")
-                .Include("~/Content/Styles/fancyDatePicker.css"));
+                .Include("~/Content/Styles/fancyDatePicker.css")
+                .Include("~/Content/Styles/contextMenu.css")
+                .Include("~/Scripts/codemirror-2.37/lib/codemirror.css")
+                .Include("~/Scripts/codemirror-2.37/theme/night.css")
+                .Include("~/Content/Styles/sliderManager.css"));
 
             //.Include("~/Content/HtmlEditorScript/jquery-ui-1.7.2.custom.min.js")
             bundles.Add(new ScriptBundle("~/bundles/jquery")
@@ -49,7 +53,17 @@ namespace LightData.CMS
                 .Include("~/Content/Script/colorpicker.js")
                 .Include("~/Content/Script/InputValidator.js")
                 .Include("~/Content/Script/fancyDatePicker.js")
-                .Include("~/Content/Script/ContextMenu.js"));
+                .Include("~/Content/Script/ContextMenu.js")
+                .Include("~/Content/Script/Themes.js")
+                .Include("~/Content/Script/sliderManager.js")
+                .Include("~/Scripts/codemirror-2.37/lib/codemirror.js")
+                .Include("~/Scripts/codemirror-2.37/mode/htmlmixed/htmlmixed.js")
+                .Include("~/Scripts/codemirror-2.37/mode/javascript/javascript.js")
+                .Include("~/Scripts/codemirror-2.37/mode/css/css.js")
+                .Include("~/Scripts/codemirror-2.37/mode/xml/xml.js"));
+
+
+
         }
     }
 }

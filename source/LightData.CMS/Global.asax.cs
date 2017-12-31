@@ -14,10 +14,16 @@ namespace LightData.CMS
     {
         protected void Application_Start()
         {
-      
+
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            AuthSettings.GetFileById += (long fileId) =>
+            {
+                using (var rep = new Repository())
+                    return rep.Get<FileItem>().Where(x => x.Id == fileId).Execute();
+            };
+
             AuthSettings.OnGetUser += (username, password) =>
             {
                 using (var rep = new Repository())
