@@ -12,10 +12,15 @@
             saveFileItemUri: undefined,
             onInsert: function (img) { },
             imageProperties: undefined,
-            allowedFiles: [],
+            ImageFiletypes: ["PNG", "GIF", "JPEG", "JPG"],
+            fileTypes: { JAVASCRIPT: "JAVASCRIPT", CSS: "CSS", Image: "Image", HtmlEmbedded: "HtmlEmbedded", ROOT: "ROOT", ThemeContainer: "ThemeContainer" },
             view: "dialog",
-            isImage: function () {
-                return (settings.allowedFiles.indexOf("PNG") !== -1 || settings.allowedFiles.indexOf("GIF") !== -1 || settings.allowedFiles.indexOf("JPEG") !== -1 || settings.allowedFiles.indexOf("JPG") !== -1);
+            isImage: function (file) {
+                var result = false;
+                $.each(settings.fileTypes, function () {
+                    result = result || file.toUpperCase().indexOf(this) != -1;
+                });
+                return result;
             }
         }, options);
         var $this = $(this);
@@ -46,7 +51,6 @@
                 contentType: "application/json",
                 dataType: "json",
                 type: "POST",
-                data: JSON.stringify({ isTheme: !settings.isImage() }),
                 url: settings.folderGetUri,
                 success: function (data) {
                     var renderFiles = selectedFolder === undefined;
@@ -140,30 +144,40 @@
                     }
 
                     function bindEdit(li, item) {
+
+                        var dataSource = [
+                            {
+                                text: "Rename",
+                                id: 0,
+                                item: item,
+                                li: li
+                            }, {
+                                text: "Delete",
+                                id: 1,
+                                item: item,
+                                li: li
+                            }, {
+                                text: (item.folderType == settings.fileTypes.Image ? "Upload" : "Create File"),
+                                id: 2,
+                                item: item,
+                                li: li
+                            }, {
+                                text: (item.folderType == settings.fileTypes.ROOT ? "Create New Theme" : "New Folder"),
+                                id: 3,
+                                item: item,
+                                li: li
+                            },
+                        ];
+                        if (item.folderType === settings.fileTypes.ROOT) {
+                            dataSource.shift();
+                            dataSource.shift();
+                            dataSource.shift();
+                        } else if (item.folderType === settings.fileTypes.ThemeContainer) {
+                            dataSource.splice(2, 1);
+                            dataSource.pop();
+                        }
                         li.contextMenu({
-                            dataSource: [
-                                {
-                                    text: "Rename",
-                                    id: 0,
-                                    item: item,
-                                    li: li
-                                }, {
-                                    text: "Delete",
-                                    id: 1,
-                                    item: item,
-                                    li: li
-                                }, {
-                                    text: (settings.isImage() ? "Upload" : "Create File"),
-                                    id: 2,
-                                    item: item,
-                                    li: li
-                                }, {
-                                    text: "New Folder",
-                                    id: 3,
-                                    item: item,
-                                    li: li
-                                },
-                            ],
+                            dataSource: dataSource,
                             click: function (tItem) {
                                 if (tItem.id === 0) {
                                     var renameContainer = $("<div class='inputContainer'><label>Enter the folder name</label> <input type='text' value='" + tItem.item.name + "' </div>");
@@ -215,11 +229,21 @@
                                 } else if (tItem.id === 3) {
                                     var renameContainer = $("<div class='inputContainer'><label>Enter the new folder name</label> <input type='text' value='' </div>");
                                     $("body").dialog({
-                                        title: "Enter the new folder name",
+                                        title: (item.FolderType == settings.fileTypes.ROOT ? "Enter the new theme name" : "Enter the new folder name"),
                                         content: renameContainer,
                                         saveText: "Save",
                                         onSave: function (dialog) {
-                                            var newItem = { name: renameContainer.find("input").val(), parent_Id: tItem.item.id }
+                                            var newItem = { name: renameContainer.find("input").val(), parent_Id: tItem.item.id, children: [] }
+                                            if (tItem.item.folderType == settings.fileTypes.ROOT) {
+                                                newItem.folderType = settings.fileTypes.ROOT;
+                                                newItem.children.push({ name: "CSS", folderType: settings.fileTypes.CSS });
+                                                newItem.children.push({ name: "JAVASCRIPT", folderType: settings.fileTypes.JAVASCRIPT });
+                                                newItem.children.push({ name: "MasterPage", folderType: settings.fileTypes.HtmlEmbedded });
+                                                newItem.children.push({ name: "Images", folderType: settings.fileTypes.Image });
+                                            } else {
+                                                newItem.folderType = tItem.item.folderType;
+                                            }
+
                                             fileContainer.LightDataAjax({
                                                 contentType: "application/json",
                                                 dataType: "json",
@@ -237,7 +261,7 @@
                                     }).show();
 
                                 } else if (tItem.id === 2) {
-                                    container.newFile(tItem.item.id, tItem.item.name);
+                                    container.newFile(tItem.item.id, tItem.item.name, tItem.item.folderType);
                                 }
                             }
                         });
@@ -279,62 +303,61 @@
                     function renderChild(children, parent) {
                         $.each(children, function () {
                             var xfolder = this;
-                            var arr = {
-                                text: xfolder.name,
-                                id: 5,
-                                folder: xfolder,
-                                item: item,
-                                li: li,
-                                children: []
-                            }
-                            if (xfolder.children.length) {
-                                renderChild(xfolder.children, arr);
-                            }
-                            parent.children.push(arr);
+                            if (item.folder.folderType === xfolder.folderType && item.folder.id != xfolder.id) {
+                                var arr = {
+                                    text: xfolder.name,
+                                    id: 5,
+                                    folder: xfolder,
+                                    item: item,
+                                    li: li,
+                                    children: [],
+                                    isImage: settings.isImage(item.fileName)
+                                }
+                                if (xfolder.children.length) {
+                                    renderChild(xfolder.children, arr);
+                                }
+
+                                parent.children.push(arr);
+                            } else
+                                if (xfolder.children.length) {
+                                    renderChild(xfolder.children, parent);
+                                }
                         });
-                    }
-                    var arr = {
-                        text: folder.name,
-                        id: 5,
-                        folder: folder,
-                        item: item,
-                        li: li,
-                        children: []
-                    }
-                    if (folder.children.length) {
-                        renderChild(folder.children, arr);
+
                     }
 
-                    moveTo.children.push(arr)
+                    renderChild([folder], moveTo);
                 });
 
+                var datasource = [
+                    {
+                        text: (item.folder.folderType === settings.fileTypes.Image ? "Upload" : "Create File"),
+                        id: 2,
+                        item: item,
+                        li: li
+                    },
+                    {
+                        text: "Rename",
+                        id: 0,
+                        item: item,
+                        li: li
+                    }, {
+                        text: "Delete",
+                        id: 1,
+                        item: item,
+                        li: li
+                    },
+                    moveTo
+                ]
+                if (moveTo.children.length <= 0)
+                    datasource.pop();
 
+                if (item.isSystem) {
+                    datasource.shift();
+                }
 
                 li.contextMenu({
-                    dataSource: [
-                        {
-                            text: "Rename",
-                            id: 0,
-                            item: item,
-                            li: li
-                        }, {
-                            text: "Delete",
-                            id: 1,
-                            item: item,
-                            li: li
-                        }, {
-                            text: (settings.isImage() ? "Upload" : "Create File"),
-                            id: 2,
-                            item: item,
-                            li: li
-                        }, {
-                            text: "New Folder",
-                            id: 3,
-                            item: item,
-                            li: li
-                        },
-                        moveTo
-                    ],
+                    dataSource: datasource,
                     click: function (tItem) {
                         if (tItem.id === 0) {
                             var renameContainer = $("<div class='inputContainer'><label>Enter the folder name</label> <input type='text' value='" + tItem.item.fileName + "' </div>");
@@ -382,32 +405,8 @@
                                     return false;
                                 }
                             }).show();
-                        } else if (tItem.id === 3) {
-                            var renameContainer = $("<div class='inputContainer'><label>Enter the new folder name</label> <input type='text' value='' </div>");
-                            $("body").dialog({
-                                title: "Enter the new folder name",
-                                content: renameContainer,
-                                saveText: "Save",
-                                onSave: function (dialog) {
-                                    var newItem = { name: renameContainer.find("input").val(), parent_Id: tItem.item.folder_Id }
-                                    fileContainer.LightDataAjax({
-                                        contentType: "application/json",
-                                        dataType: "json",
-                                        type: "POST",
-                                        data: JSON.stringify({ folder: newItem }),
-                                        url: settings.folderSaveUri,
-                                        success: function (data) {
-                                            container.renderFolders();
-                                            dialog.close();
-                                        }
-                                    });
-                                    return false;
-
-                                }
-                            }).show();
-
                         } else if (tItem.id === 2) {
-                            container.newFile(tItem.item.folder_Id, tItem.item.folder.name);
+                            container.newFile(tItem.item.folder_Id, tItem.item.folder.name, tItem.item.folder.folderType);
                         } else if (tItem.id > 4) {
                             tItem.item.folder_Id = tItem.folder.id;
                             $("body").LightDataAjax({
@@ -450,7 +449,7 @@
                         pageNumber++;
                         $(data).each(function () {
                             var item = this;
-                            var img = $("<div><img src='" + (settings.isImage() ? "data:image/png" : "data:image/svg+xml") + ";base64," + this.base64ThumpFile + "' /><p> " + this.fileName + " </p></div>")
+                            var img = $("<div><img src='" + (item.folder.folderType === settings.fileTypes.Image ? "data:image/png" : "data:image/svg+xml") + ";base64," + this.base64ThumpFile + "' /><p> " + this.fileName + " </p></div>")
                             fileContainer.append(img);
                             bindEdit(img, item);
                             img.click(function () {
@@ -462,7 +461,7 @@
                                 img.addClass("selected");
                                 filePreview.html("").append(editContainer);
 
-                                if (!settings.isImage()) {
+                                if (item.folder.folderType !== settings.fileTypes.Image) {
                                     editContainer.append("<p>" + item.fileName + "</p>");
                                     editContainer.append("<textarea class='codeContainer'></textarea>");
                                     settings.codeMirror = CodeMirror.fromTextArea(editContainer.find("textarea")[0], {
@@ -477,7 +476,7 @@
                                     dg.find(".enlarge").click(function () {
                                         if ($(this).hasClass("disabled"))
                                             return false;
-                                        settings.codeMirror.setSize($(window).width()-50, 1000);
+                                        settings.codeMirror.setSize($(window).width() - 50, 1000);
                                         var codeMirror = editContainer.find(".CodeMirror");
                                         var ddv = $("<div class='inputContainer'></div>");
                                         ddv.append(codeMirror);
@@ -516,7 +515,7 @@
                                     })
 
 
-                                } else if (settings.isImage()) {
+                                } else if (item.folder.folderType === settings.fileTypes.Image) {
                                     var tabControl = filePreview.tabs({
                                         onSelect: function () {
                                             var tab = tabControl.tab("Preview");
@@ -543,20 +542,22 @@
                                     preview.content.find(".fileUri").val((settings.getImageUri + "?id=" + item.id))
                                     tabControl.selectTab("Preview");
 
-                                    dg.settings.customButtons[0].click = function () {
-                                        preview.content.find("img").css({ width: "+=10", height: "+=9" });
-                                        editContainer.find(".width").val(preview.content.find("img").width());
-                                        editContainer.find(".height").val(preview.content.find("img").height());
-                                        return false;
-                                    }
+                                    if (settings.view == "dialog") {
+                                        dg.settings.customButtons[0].click = function () {
+                                            preview.content.find("img").css({ width: "+=10", height: "+=9" });
+                                            editContainer.find(".width").val(preview.content.find("img").width());
+                                            editContainer.find(".height").val(preview.content.find("img").height());
+                                            return false;
+                                        }
 
-                                    dg.settings.customButtons[1].click = function () {
-                                        preview.content.find("img").css({ width: "-=10", height: "-=9" });
-                                        editContainer.find(".width").val(preview.content.find("img").width());
-                                        editContainer.find(".height").val(preview.content.find("img").height());
-                                        return false;
-                                    }
+                                        dg.settings.customButtons[1].click = function () {
+                                            preview.content.find("img").css({ width: "-=10", height: "-=9" });
+                                            editContainer.find(".width").val(preview.content.find("img").width());
+                                            editContainer.find(".height").val(preview.content.find("img").height());
+                                            return false;
+                                        }
 
+                                    }
                                     properties.content.append(editContainer);
                                     editContainer.append("<label>Title:</label>");
                                     editContainer.append("<input type='text' class='title' value='" + item.title + "' />");
@@ -589,28 +590,34 @@
             }, 100);
         }
 
-        container.newFile = function (id, text) {
+        container.newFile = function (id, text, folderType) {
+            folderType = typeof folderType === "undefined" ? selectedFolder.folderType : folderType;
             id = typeof id === "undefined" ? selectedFolder.id : id;
             text = typeof text === "undefined" ? selectedFolder.name : text;
             var allowedFile = "";
-            $(settings.allowedFiles).each(function () {
+            $(settings.ImageFiletypes).each(function () {
                 allowedFile += (allowedFile != "" ? "," : "") + this;
             });
 
 
             var uploadContainer = $("<div><table style='width:100%;'><tr><td colspan='2'>Folder: " + text + "</td> </tr><tr><td colspan='2'>AllowedFiles: " + allowedFile + "</td> </tr></table></div>");
-            if (!settings.isImage()) {
+            if (folderType !== settings.fileTypes.Image) {
                 uploadContainer.find("tr").last().remove();
                 var inputContainer = $("<div class='inputContainer'></div>");
                 inputContainer.append("<label>File Name</label>");
                 inputContainer.append("<input type='text' value='' />");
 
                 inputContainer.append("<label>File type</label>");
-                inputContainer.append("<input type='text' value='JAVASCRIPT' />");
+                inputContainer.append("<input type='text' value='" + folderType + "' />");
                 inputContainer.find("input").last().autoFill({
-                    datasource: [{ name: "JAVASCRIPT", id: 0 }, { name: "CSS", id: 1 }],
+                    datasource: [
+                        { name: "JAVASCRIPT", id: 0 },
+                        { name: "CSS", id: 1 },
+                        { name: "HtmlEmbedded", id: 2 }
+                    ],
                     textField: "name",
                     valueField: "id",
+                    disabled: true
                 });
                 uploadContainer.append(inputContainer);
                 $("body").dialog({
@@ -737,11 +744,8 @@
                 dg.show();
                 dg.find(".delete").addClass("disabled");
             } else {
-                container.prepend("<h2>Manage Themes <span class='addItem'></span><span class='imageManager' title='Image Manager'></span><span title='Enlarge' class='enlarge'></span><span title='Save Changes' class='btnSave'>Save</span></h2>");
+                container.prepend("<h2>Manage Themes <span class='imageManager' title='Image Manager'></span><span title='Enlarge' class='enlarge'></span><span title='Save Changes' class='btnSave'>Save</span></h2>");
                 dg = container.children("h2").first();
-                dg.find(".addItem").click(function () {
-                    container.newFile();
-                });
                 dg.find(".enlarge,.btnSave").addClass("disabled");
                 $this.append(container);
                 container.children("h2").find(".imageManager").click(function () {
@@ -754,7 +758,7 @@
                         folderDeleteUri: settings.folderDeleteUri,
                         getImageUri: settings.getImageUri,
                         saveFileItemUri: settings.saveFileItemUri,
-                        allowedFiles: ["PNG", "GIF", "JPEG", "JPG"],
+                        fileTypes: settings.fileTypes,
                         onInsert: function (img) {
 
                         }

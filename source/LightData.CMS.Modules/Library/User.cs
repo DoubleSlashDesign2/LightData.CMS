@@ -7,9 +7,11 @@ namespace LightData.CMS.Modules.Library
     public class User : DbEntity
     {
         [NotNullable]
+        [DataEncode]
         public string UserName { get; set; }
 
         [NotNullable]
+        [DataEncode]
         public string Password { get; set; }
 
         [ForeignKey(typeof(Role))]

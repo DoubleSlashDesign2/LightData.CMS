@@ -16,19 +16,42 @@ namespace LightData.CMS.Modules.Migrations
                 {
                     CountryCode = culture.Name,
                     Name = culture.DisplayName
-                })
-                .ToList();
+                }).ToList();
+
             foreach (var country in countries)
             {
                 repository.Save(country);
             }
+
+            var siteSettingCollection = new SiteSettingCollection()
+            {
+                Name = "Theme Settings",
+                SiteSettings = new List<SiteSetting>()
+                {
+                new SiteSetting()
+                {
+                    Name = "Default Theme",
+                    Value = "Demo",
+                    Key = EnumHelper.Keys.DefaultTheme
+                },
+                new SiteSetting()
+                {
+                    Name = "Site local path",
+                    Value = @"D:\Projects\LightData.CMS\source\LightDataTable.Site\Views",
+                    Key = EnumHelper.Keys.LocalPath
+                }
+                }
+            };
+
+
+            repository.Save(siteSettingCollection);
             var users = new List<User>();
             users.AddRange(new List<User>()
             {
                 new User()
                 {
                 UserName = "Admin",
-                Password = Methods.Encode("Admin"),
+                Password = "Admin",
                 Role = new Role(){Name = "Admin", RoleDefinition= EnumHelper.RoleDefinition.Developer},
                 Person = new Person()
                 {
@@ -75,20 +98,13 @@ namespace LightData.CMS.Modules.Migrations
                 {
                     Name= "Root",
                     IsSystem= true,
-                },
-                new Folder()
-                {
-                    Name= "Default",
-                    IsSystem= true,
-                    IsTheme = true
-
+                    FolderType = EnumHelper.FolderTypes.ROOT
                 }
             };
 
                 folders.ForEach(x => repository.Save(x));
             }
             base.ExecuteMigration(repository);
-            repository.SaveChanges();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace LightData.Auth.Controllers
         [HttpPost]
         public ActionResult Login(string userName, string password, bool isPersistent = true)
         {
-            var user = AuthSettings.OnGetUser(userName, Methods.Encode(password)).FirstOrDefault();
+            var user = AuthSettings.OnGetUser(userName, password).FirstOrDefault();
             if (user == null)
                 return View(0);
             FormsAuthentication.SetAuthCookie(user.UserName, isPersistent);

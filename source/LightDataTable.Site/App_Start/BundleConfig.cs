@@ -16,21 +16,17 @@ namespace LightData.Site
             //var files = Methods.GetTheme();
 
             var style = new StyleBundle("~/bundles/css")
-                .Include("~/Content/Styles/Layout.css")
-                .Include("~/Content/Styles/jHtmlArea.css")
-                .Include("~/Content/Styles/jHtmlArea.Editor.css");
-            
+                .Include("~/Content/Styles/Layout.css");
+
             //foreach (var css in files.Where(x => x.ToLower().EndsWith("css")))
             //{
             //    var tCss= css.Replace(@"\", "/");
             //    style.Include(string.Format("~/{0}", tCss));
             //}
-          
+
 
             var scripts = new ScriptBundle("~/bundles/jquery")
-                .Include("~/Content/Script/jquery-3.2.1.min.js")
-                .Include("~/Content/Script/jquery-ui-1.7.2.custom.min.js")
-                .Include("~/Content/Script/jHtmlArea-0.8.js");
+                .Include("~/Content/Script/jquery-3.2.1.min.js");
 
             //foreach (var script in files.Where(x => x.ToLower().EndsWith("js")))
             //{

@@ -17,7 +17,10 @@ namespace LightData.CMS.Controllers
         [HttpPost]
         public async Task<ExternalActionResult> Get()
         {
-            var sliderCollection = await Repository.Get<SliderCollection>().LoadChildren().IgnoreChildren(x => x.Sliders.Select(a => a.File.Folder)).ExecuteAsync();
+            var sliderCollection = await Repository.Get<SliderCollection>().LoadChildren().IgnoreChildren(x =>
+            x.Sliders.Select(a => a.File.Folder),
+            x => x.Sliders.Select(a => a.File.Slider),
+            x => x.Sliders.Select(a => a.SliderCollection)).ExecuteAsync();
             return await sliderCollection.ToJsonResultAsync();
         }
 
@@ -31,7 +34,7 @@ namespace LightData.CMS.Controllers
         [HttpPost]
         public void Delete(long itemId)
         {
-            var item = Repository.Get<SliderCollection>().Where(x => x.Id == itemId).IgnoreChildren(x => x.Sliders.Select(a => a.File)).LoadChildren().Execute().First();
+            var item = Repository.Get<SliderCollection>().Where(x => x.Id == itemId).IgnoreChildren(x => x.Sliders.Select(a => a.File), x => x.Sliders.Select(a => a.File.Slider), x => x.Sliders.Select(a => a.SliderCollection)).LoadChildren().Execute().First();
             Repository.Delete(item);
             Repository.SaveChanges();
         }
@@ -39,7 +42,7 @@ namespace LightData.CMS.Controllers
         [HttpPost]
         public void DeleteSlider(long itemId)
         {
-            var item = Repository.Get<Slider>().Where(x => x.Id == itemId).IgnoreChildren(x => x.File).LoadChildren().Execute().First();
+            var item = Repository.Get<Slider>().Where(x => x.Id == itemId).IgnoreChildren(x => x.File, x => x.SliderCollection).LoadChildren().Execute().First();
             Repository.Delete(item);
             Repository.SaveChanges();
         }

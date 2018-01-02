@@ -48,8 +48,9 @@ namespace LightData.Auth.Helper
             }
             if (Data != null)
             {
-             
+               
                 var camelCaseFormatter = new JsonSerializerSettings();
+                camelCaseFormatter.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
                 response.Write(JsonConvert.SerializeObject(Data, Formatting.Indented, camelCaseFormatter));
 

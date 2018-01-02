@@ -11,7 +11,8 @@
             selectedValue: undefined,
             selectedItem: undefined,
             hideValues: [],
-            additionalValues: undefined
+            additionalValues: undefined,
+            disabled: false
         }, options);
         $(this).addClass("autofillInput");
         var container = $("<div class='autoFill'></div>");
@@ -55,11 +56,9 @@
         }
 
         container.render = function (data, isFocus, setDataOnly) {
-            var offset = container.find("input")[0].getBoundingClientRect();
-            container.find(".arrowContainer").css({
-                left: (offset.width - container.find(".arrowContainer").width()) + 4,
-                top: 6
-            });
+            if (isFocus)
+                $(".autofilldataContainer").hide();
+
             if (!data)
                 return;
 
@@ -264,12 +263,12 @@
             });
 
             input.focus(function () {
-                if (dataContainer.is(":hidden"))
+                if (dataContainer.is(":hidden") && !container.find("input").is(":disabled"))
                     container.GetData(true);
             });
 
             container.find(".arrowContainer").click(function () {
-                if (dataContainer.is(":hidden"))
+                if (dataContainer.is(":hidden") && !container.find("input").is(":disabled"))
                     container.GetData(true);
             });
 
@@ -277,6 +276,14 @@
         }
         container.bind();
         setInterval(function () {
+            if (settings.disabled && !container.find("input").is(":disabled")) {
+                container.find("input").prop("disabled", true);
+                container.find("input").prop("readonly", true);
+            } else if (!settings.disabled && container.find("input").is(":disabled")) {
+                container.find("input").prop("disabled", false);
+                container.find("input").prop("readonly", false);
+            }
+
             var offset = container.find("input")[0].getBoundingClientRect();
             container.find(".arrowContainer").css({
                 left: (offset.width - container.find(".arrowContainer").width()) + 4,

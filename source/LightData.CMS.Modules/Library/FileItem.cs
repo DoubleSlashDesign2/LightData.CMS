@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using EntityWorker.Core.Attributes;
 using EntityWorker.Core.Object.Library;
@@ -15,6 +16,8 @@ namespace LightData.CMS.Modules.Library
 
         [IndependentData]
         public Folder Folder { get; set; }
+
+        public List<Slider> Slider { get; set; }
 
         /// <summary>
         /// Path to image on disk
@@ -61,7 +64,7 @@ namespace LightData.CMS.Modules.Library
             {
                 if (_text != null)
                     return _text;
-                if (File != null && ( FileType == EnumHelper.AllowedFiles.CSS || FileType == EnumHelper.AllowedFiles.JAVASCRIPT))
+                if (File != null && ( FileType == EnumHelper.AllowedFiles.CSS || FileType == EnumHelper.AllowedFiles.JAVASCRIPT || FileType == EnumHelper.AllowedFiles.HtmlEmbedded))
                 {
                     _text = Uri.EscapeDataString(Encoding.UTF8.GetString(File));
                 }

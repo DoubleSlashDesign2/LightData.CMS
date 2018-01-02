@@ -2,6 +2,7 @@
 using EntityWorker.Core.Object.Library;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using static LightData.CMS.Modules.Helper.EnumHelper;
 
 namespace LightData.CMS.Modules.Library
 {
@@ -17,7 +18,8 @@ namespace LightData.CMS.Modules.Library
 
         public bool IsSystem { get; set; }
 
-        public bool IsTheme { get; set; }
+        [StringFy]
+        public FolderTypes FolderType { get; set; }
 
         [JsonIgnore]
         public List<FileItem> Files { get; set; }

@@ -12,6 +12,9 @@ namespace LightData.CMS.Modules.Library
         public long SliderCollection_Id { get; set; }
 
         [IndependentData]
+        public SliderCollection SliderCollection { get; set; }
+
+        [IndependentData]
         public FileItem File { get; set; }
     }
 }

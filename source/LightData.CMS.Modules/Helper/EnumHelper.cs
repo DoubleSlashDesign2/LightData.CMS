@@ -27,7 +27,25 @@
             JPEG,
             JPG,
             JAVASCRIPT,
-            CSS
+            CSS,
+            HtmlEmbedded
+        }
+
+        public enum FolderTypes
+        {
+            ROOT,
+            JAVASCRIPT,
+            CSS,
+            Image,
+            HtmlEmbedded,
+            ThemeContainer
+        }
+
+        public enum Keys
+        {
+            DefaultTheme,
+            LocalPath,
+            EmailSettings
         }
     }
 }

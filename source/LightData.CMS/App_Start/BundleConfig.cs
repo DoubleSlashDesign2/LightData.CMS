@@ -60,7 +60,8 @@ namespace LightData.CMS
                 .Include("~/Scripts/codemirror-2.37/mode/htmlmixed/htmlmixed.js")
                 .Include("~/Scripts/codemirror-2.37/mode/javascript/javascript.js")
                 .Include("~/Scripts/codemirror-2.37/mode/css/css.js")
-                .Include("~/Scripts/codemirror-2.37/mode/xml/xml.js"));
+                .Include("~/Scripts/codemirror-2.37/mode/xml/xml.js")
+                .Include("~/Scripts/codemirror-2.37/mode/htmlembedded/htmlembedded.js"));
 
 
 

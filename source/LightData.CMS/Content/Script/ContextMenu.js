@@ -2,7 +2,6 @@
 
     $.fn.contextMenu = function (options) {
         var settings = $.extend({
-            // [{ Text, id }]
             dataSource: [],
             click: function (item) { },
             onLoad: function (settings) { }
@@ -44,24 +43,27 @@
 
                     if (item.children && item.children.length > 0) {
                         parent.addClass("hasChildren");
+                        li.addClass("hasChildren");
                         var y = $("<ul class='contextsubItem'></ul>");
-                        li.append(y);
                         $.each(item.children, function () {
                             loadItem(this, y);
                         });
+                        li.append(y);
                     }
 
                     parent.append(li);
                 }
-                context.append(div);
+
+
                 if (x.children && x.children.length > 0)
                     div.addClass("hasChildren");
+                var ul = $("<ul class='contextsubItem'></ul>");
                 $.each(x.children, function () {
-                    var y = $("<ul class='contextsubItem'></ul>");
-                    loadItem(this, y);
-                    div.append(y)
+                    loadItem(this, ul);
                 });
-
+                if (ul.children("li").length > 0)
+                    div.append(ul);
+                context.append(div);
             });
             var iFrame = undefined;
             try {
@@ -105,7 +107,7 @@
 
         $("body").mousedown(function (e) {
             var target = $(e.target);
-            if (!(target.parent().hasClass("contextItem") || target.hasClass("contextItem") || target.hasClass("contextMenu"))) 
+            if (!(target.parent().hasClass("contextItem") || target.hasClass("contextItem") || target.hasClass("contextMenu")))
                 $(".contextMenu").remove();
 
         });

@@ -44,12 +44,14 @@ namespace LightData.CMS.Controllers
         public void Save(Menus item)
         {
             Repository.Save(item);
+            Repository.SaveChanges();
         }
 
         [HttpPost]
         public void Delete(Menus item)
         {
             Repository.Delete(item);
+            Repository.SaveChanges();
         }
 
     }

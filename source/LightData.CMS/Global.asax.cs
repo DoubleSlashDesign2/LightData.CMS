@@ -7,6 +7,7 @@ using LightData.CMS.Modules.Library;
 using LightData.CMS.Modules.Repository;
 using System.Web.Http;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace LightData.CMS
 {
@@ -14,6 +15,13 @@ namespace LightData.CMS
     {
         protected void Application_Start()
         {
+            HttpConfiguration config = GlobalConfiguration.Configuration;
+            var camelCaseFormatter = new JsonSerializerSettings();
+            camelCaseFormatter.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            camelCaseFormatter.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            //return JsonConvert.SerializeObject(data, Formatting.Indented, camelCaseFormatter);
+
+            config.Formatters.JsonFormatter.SerializerSettings = camelCaseFormatter;
 
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -30,7 +38,7 @@ namespace LightData.CMS
                     return rep.Get<User>().Where(x => x.UserName == username && x.Password == password)
                         .LoadChildren(x => x.Role).Execute().Cast<dynamic>().ToList();
             };
-
+      
         }
     }
 }

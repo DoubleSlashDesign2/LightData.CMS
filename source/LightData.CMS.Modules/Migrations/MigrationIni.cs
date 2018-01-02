@@ -15,7 +15,11 @@ namespace LightData.CMS.Modules.Migrations
             var folders = new List<Folder>();
             try
             {
-                folders.AddRange(repository.Get<Folder>().Where(x => !x.Parent_Id.HasValue).LoadChildren().IgnoreChildren(x => x.Files.Select(a => a.Folder)).Execute());
+                folders.AddRange(repository.Get<Folder>().Where(x => !x.Parent_Id.HasValue).LoadChildren()
+                    .IgnoreChildren(x => x.Files.Select(a => a.Folder),
+                    x => x.Files.Select(a => a.Slider.Select(s => s.File)),
+                    x => x.Files.Select(a => a.Slider.Select(s => s.SliderCollection.Sliders))
+                    ).Execute());
             }
             catch (Exception ex)
             {
@@ -27,7 +31,6 @@ namespace LightData.CMS.Modules.Migrations
             MethodHelper.GetDbEntitys(this.GetType().Assembly).ForEach(x => repository.CreateTable(x));
             folders.ForEach(x => repository.Save(x.ClearAllIdsHierarchy(true)));
             base.ExecuteMigration(repository);
-            repository.SaveChanges();
         }
     }
 }
