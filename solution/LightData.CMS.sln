@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightData.Auth", "..\source
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightDataTable.Site", "..\source\LightDataTable.Site\LightDataTable.Site.csproj", "{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityWorker.Core", "..\..\EntityWorker.Core\Source\EntityWorker.Core.csproj", "{32F63D38-7866-472E-A695-A699502889D2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,14 +51,6 @@ Global
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Release|x64.ActiveCfg = Release|Any CPU
 		{BA310F1D-4856-4C6F-8682-325CB2C2F0EC}.Release|x64.Build.0 = Release|Any CPU
-		{32F63D38-7866-472E-A695-A699502889D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{32F63D38-7866-472E-A695-A699502889D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{32F63D38-7866-472E-A695-A699502889D2}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{32F63D38-7866-472E-A695-A699502889D2}.Debug|x64.Build.0 = Debug|Any CPU
-		{32F63D38-7866-472E-A695-A699502889D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{32F63D38-7866-472E-A695-A699502889D2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{32F63D38-7866-472E-A695-A699502889D2}.Release|x64.ActiveCfg = Release|Any CPU
-		{32F63D38-7866-472E-A695-A699502889D2}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

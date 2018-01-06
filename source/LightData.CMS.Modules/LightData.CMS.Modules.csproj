@@ -8,37 +8,17 @@
     <Authors>LightData.CMS.Modules</Authors>
     <Company>LightData.CMS.Modules</Company>
     <Product>LightData.CMS.Modules</Product>
+    <Platforms>AnyCPU;x86;x64</Platforms>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Scripts\**" />
-    <EmbeddedResource Remove="Scripts\**" />
-    <None Remove="Scripts\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="System.Configuration">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Configuration.dll</HintPath>
     </Reference>
   </ItemGroup>
-
+  
   <ItemGroup>
-    <Folder Include="Themes\Default\images\" />
-    <Folder Include="Themes\Default\script\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="EntityWorker.Core" Version="1.2.3" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\EntityWorker.Core\Source\EntityWorker.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Themes\Default\**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

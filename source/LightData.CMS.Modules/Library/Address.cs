@@ -21,6 +21,7 @@ namespace LightData.CMS.Modules.Library
 
         public string Area { get; set; }
 
+        [IndependentData]
         public Country Country { get; set; }
 
         [ForeignKey(typeof(Person))]

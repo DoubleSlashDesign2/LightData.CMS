@@ -4,11 +4,16 @@ using EntityWorker.Core.InterFace;
 using EntityWorker.Core.Object.Library;
 using LightData.CMS.Modules.Library;
 using LightData.CMS.Modules.Helper;
+using System;
 
 namespace LightData.CMS.Modules.Migrations
 {
     public class MigrationStartUp : Migration
     {
+        //public MigrationStartUp()
+        //{
+        //    base.MigrationIdentifier = new DateTime().ToLongDateString();
+        //}
         public override void ExecuteMigration(IRepository repository)
         {
             var countries = Methods.GetCountriesByIso3166()
@@ -43,16 +48,17 @@ namespace LightData.CMS.Modules.Migrations
                 }
             };
 
-
+            var role = new Role() { Name = "Admin", RoleDefinition = EnumHelper.RoleDefinition.Developer };
             repository.Save(siteSettingCollection);
             var users = new List<User>();
+
             users.AddRange(new List<User>()
             {
                 new User()
                 {
                 UserName = "Admin",
                 Password = "Admin",
-                Role = new Role(){Name = "Admin", RoleDefinition= EnumHelper.RoleDefinition.Developer},
+                Role = role,
                 Person = new Person()
                 {
                     FirstName = "Alen",

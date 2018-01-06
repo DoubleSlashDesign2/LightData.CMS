@@ -8,12 +8,15 @@ namespace LightData.CMS.Modules.Repository
 {
     public class Repository : Transaction
     {
-        public Repository() : base(GetConnectionString(), true, DataBaseTypes.Mssql) { }
+        public Repository(DataBaseTypes dbType = DataBaseTypes.Mssql) : base(GetConnectionString(dbType), true, dbType)
+        {
+
+        }
 
         // get the full connection string from the web-config
-        public static string GetConnectionString()
+        public static string GetConnectionString(DataBaseTypes dbType)
         {
-            return @"Server=.\SQLEXPRESS; Database=CMS; User Id=root; Password=root;";
+            return dbType == DataBaseTypes.Mssql ? @"Server=.\SQLEXPRESS; Database=CMS; User Id=root; Password=root;" : @"Data Source=D:\Projects\LightData.CMS\source\LightData.CMS\App_Data\LightDataTable.db";
             //return ConfigurationManager.ConnectionStrings["Db-connection"].ConnectionString;
         }
     }

@@ -23,7 +23,6 @@ namespace LightData.CMS.Modules.Migrations
             }
             catch (Exception ex)
             {
-                throw;
                 // Ignore
             }
 
