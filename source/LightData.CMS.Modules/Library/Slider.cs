@@ -3,13 +3,16 @@ using EntityWorker.Core.Object.Library;
 
 namespace LightData.CMS.Modules.Library
 {
-    public class Slider : DbEntity
+    public class Slider
     {
+        [PrimaryKey]
+        public System.Guid Id { get; set; }
+
         [ForeignKey(typeof(FileItem))]
-        public long FileItem_Id { get; set; }
+        public System.Guid FileItem_Id { get; set; }
 
         [ForeignKey(typeof(SliderCollection))]
-        public long SliderCollection_Id { get; set; }
+        public System.Guid SliderCollection_Id { get; set; }
 
         [IndependentData]
         public SliderCollection SliderCollection { get; set; }

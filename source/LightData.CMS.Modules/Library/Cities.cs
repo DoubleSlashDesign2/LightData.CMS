@@ -3,13 +3,16 @@ using EntityWorker.Core.Object.Library;
 
 namespace LightData.CMS.Modules.Library
 {
-    public class Cities : DbEntity
+    public class Cities 
     {
+        [PrimaryKey]
+        public System.Guid Id { get; set; }
+
         public string Name { get; set; }
 
         public string ShortName { get; set; }
             
         [ForeignKey(typeof(Country))]
-        public long CountryId { get; set; }
+        public System.Guid CountryId { get; set; }
     }
 }

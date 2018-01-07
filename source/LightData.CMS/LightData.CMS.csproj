@@ -50,15 +50,6 @@
     <Reference Include="dotless.Core, Version=1.5.2.0, Culture=neutral, PublicKeyToken=96b446c9e63eae34, processorArchitecture=MSIL">
       <HintPath>..\..\solution\packages\dotless.1.5.2\lib\dotless.Core.dll</HintPath>
     </Reference>
-    <Reference Include="EntityWorker.Core, Version=1.0.2.3, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\solution\packages\EntityWorker.Core.1.2.3\lib\net461\EntityWorker.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityWorker.SQLite, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\solution\packages\EntityWorker.SQLite.1.0.1\lib\net461\EntityWorker.SQLite.dll</HintPath>
-    </Reference>
-    <Reference Include="FastDeepCloner, Version=1.0.0.23, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\solution\packages\FastDeepCloner.1.0.23\lib\net461\FastDeepCloner.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\solution\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -68,9 +59,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\solution\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data.SqlClient, Version=4.2.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\solution\packages\System.Data.SqlClient.4.4.2\lib\net461\System.Data.SqlClient.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SQLite, Version=1.0.106.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\lib\net46\System.Data.SQLite.dll</HintPath>
@@ -596,10 +584,8 @@
     <Error Condition="!Exists('..\..\solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.8\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\..\solution\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\solution\packages\Microsoft.Net.Compilers.2.6.1\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets'))" />
-    <Error Condition="!Exists('..\..\solution\packages\EntityWorker.SQLite.1.0.1\build\net461\EntityWorker.SQLite.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\solution\packages\EntityWorker.SQLite.1.0.1\build\net461\EntityWorker.SQLite.targets'))" />
   </Target>
   <Import Project="..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\solution\packages\System.Data.SQLite.Core.1.0.106.0\build\net46\System.Data.SQLite.Core.targets')" />
-  <Import Project="..\..\solution\packages\EntityWorker.SQLite.1.0.1\build\net461\EntityWorker.SQLite.targets" Condition="Exists('..\..\solution\packages\EntityWorker.SQLite.1.0.1\build\net461\EntityWorker.SQLite.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

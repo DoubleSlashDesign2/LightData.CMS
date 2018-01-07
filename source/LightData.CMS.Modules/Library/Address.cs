@@ -1,15 +1,18 @@
 ﻿using EntityWorker.Core.Attributes;
-using EntityWorker.Core.Object.Library;
+using System;
 
 namespace LightData.CMS.Modules.Library
 {
-    public class Address : DbEntity
+    public class Address
     {
+        [PrimaryKey]
+        public Guid Id { get; set; }
+
         [NotNullable]
         public string Name { get; set; }
 
         [ForeignKey(typeof(Country))]
-        public long CountryId { get; set; }
+        public Guid CountryId { get; set; }
 
         public string AddressLine1 { get; set; }
 
@@ -25,6 +28,6 @@ namespace LightData.CMS.Modules.Library
         public Country Country { get; set; }
 
         [ForeignKey(typeof(Person))]
-        public long PersonId { get; set; }
+        public Guid PersonId { get; set; }
     }
 }

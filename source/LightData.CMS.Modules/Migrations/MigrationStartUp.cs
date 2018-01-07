@@ -4,8 +4,6 @@ using EntityWorker.Core.InterFace;
 using EntityWorker.Core.Object.Library;
 using LightData.CMS.Modules.Library;
 using LightData.CMS.Modules.Helper;
-using System;
-
 namespace LightData.CMS.Modules.Migrations
 {
     public class MigrationStartUp : Migration
@@ -51,8 +49,10 @@ namespace LightData.CMS.Modules.Migrations
             var role = new Role() { Name = "Admin", RoleDefinition = EnumHelper.RoleDefinition.Developer };
             repository.Save(siteSettingCollection);
             var users = new List<User>();
-
-            users.AddRange(new List<User>()
+            var i = 0;
+            while (i < 3000)
+            {
+                users.AddRange(new List<User>()
             {
                 new User()
                 {
@@ -75,6 +75,8 @@ namespace LightData.CMS.Modules.Migrations
                 }
                 }
             });
+                i++;
+            }
 
             users.ForEach(x => repository.Save(x));
 

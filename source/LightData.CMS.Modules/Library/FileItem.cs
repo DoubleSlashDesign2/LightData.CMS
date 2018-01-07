@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 using EntityWorker.Core.Attributes;
-using EntityWorker.Core.Object.Library;
 using LightData.CMS.Modules.Helper;
 using Newtonsoft.Json;
 
 namespace LightData.CMS.Modules.Library
 {
     [Table("FileItems")]
-    public class FileItem : DbEntity
+    public class FileItem
     {
+        [PrimaryKey]
+        public System.Guid Id { get; set; }
+
+
         [ForeignKey(typeof(Folder))]
-        public long Folder_Id { get; set; }
+        public System.Guid Folder_Id { get; set; }
 
         [IndependentData]
         public Folder Folder { get; set; }
@@ -64,7 +67,7 @@ namespace LightData.CMS.Modules.Library
             {
                 if (_text != null)
                     return _text;
-                if (File != null && ( FileType == EnumHelper.AllowedFiles.CSS || FileType == EnumHelper.AllowedFiles.JAVASCRIPT || FileType == EnumHelper.AllowedFiles.HtmlEmbedded))
+                if (File != null && (FileType == EnumHelper.AllowedFiles.CSS || FileType == EnumHelper.AllowedFiles.JAVASCRIPT || FileType == EnumHelper.AllowedFiles.HtmlEmbedded))
                 {
                     _text = Uri.EscapeDataString(Encoding.UTF8.GetString(File));
                 }

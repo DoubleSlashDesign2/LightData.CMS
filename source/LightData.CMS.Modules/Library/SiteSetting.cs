@@ -3,8 +3,11 @@ using EntityWorker.Core.Attributes;
 
 namespace LightData.CMS.Modules.Library
 {
-    public class SiteSetting : DbEntity
+    public class SiteSetting 
     {
+        [PrimaryKey]
+        public System.Guid Id { get; set; }
+
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -15,6 +18,6 @@ namespace LightData.CMS.Modules.Library
         public Helper.EnumHelper.Keys Key { get; set; }
 
         [ForeignKey(typeof(SiteSettingCollection))]
-        public long SiteSettingCollection_Id { get; set; }
+        public System.Guid SiteSettingCollection_Id { get; set; }
     }
 }

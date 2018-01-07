@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
-using EntityWorker.Core.Object.Library;
+using EntityWorker.Core.Attributes;
 
 
 namespace LightData.CMS.Modules.Library
 {
-    public class Person : DbEntity
+    public class Person
     {
+        [PrimaryKey]
+        public System.Guid Id { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

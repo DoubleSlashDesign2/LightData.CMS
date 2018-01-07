@@ -1,10 +1,14 @@
 ﻿using EntityWorker.Core.Attributes;
-using EntityWorker.Core.Object.Library;
+using System;
 
 namespace LightData.CMS.Modules.Library
 {
-    public class ArticleNode : DbEntity
+    public class ArticleNode
     {
+
+        [PrimaryKey]
+        public System.Guid Id { get; set; }
+
         public long ArticleId { get; set; }
 
         public string PageHeader { get; set; }
@@ -18,7 +22,7 @@ namespace LightData.CMS.Modules.Library
         /// Language
         /// </summary>
         [ForeignKey(typeof(Country))]
-        public long LanguageId { get; set; }
+        public Guid LanguageId { get; set; }
 
         public Country Language { get; set; }
     }

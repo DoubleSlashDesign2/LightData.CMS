@@ -1,7 +1,8 @@
 ﻿using LightData.Auth.Controllers;
 using LightData.Auth.Helper;
+using LightData.CMS.Modules.Interface;
 using LightData.CMS.Modules.Library;
-using LightData.CMS.Modules.Repository;
+using LightData.CMS.Modules.Library.Internal;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -9,14 +10,14 @@ namespace LightData.CMS.Controllers.Base
 {
     public class BaseController : SharedController
     {
-        private Repository _repository;
+        private IEntityWorkerRepository _repository;
 
-        protected Repository Repository
+        protected IEntityWorkerRepository Repository
         {
             get
             {
                 if (_repository == null)
-                    _repository = new Repository();
+                    _repository = new EntityWorkerRepository();
                 return _repository;
             }
         }
@@ -24,13 +25,13 @@ namespace LightData.CMS.Controllers.Base
         [HttpPost]
         public ExternalActionResult GetActiveCountries()
         {
-            return Repository.Get<Country>().Where(x => x.Visible == true).Execute().ToJsonResult();
+            return Repository.Repository.Get<Country>().Where(x => x.Visible == true).Execute().ToJsonResult();
         }
 
         [HttpPost]
         public async Task<ExternalActionResult> GetCountries(string filter)
         {
-            var countries = await Repository.Get<Country>().Where(x => string.IsNullOrEmpty(filter) || filter.Contains(x.Name)).ExecuteAsync();
+            var countries = await Repository.Repository.Get<Country>().Where(x => string.IsNullOrEmpty(filter) || filter.Contains(x.Name)).ExecuteAsync();
 
             return await countries.ToJsonResultAsync();
         }
@@ -38,7 +39,7 @@ namespace LightData.CMS.Controllers.Base
         [HttpPost]
         public void SaveCountry(Country country)
         {
-            Repository.Save(country);
+            Repository.Repository.Save(country);
         }
     }
 }

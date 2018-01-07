@@ -6,8 +6,11 @@ using EntityWorker.Core.Object.Library;
 namespace LightData.CMS.Modules.Library
 {
     [Table("Articles")]
-    public class Article : DbEntity
+    public class Article
     {
+        [PrimaryKey]
+        public System.Guid Id { get; set; }
+
         [NotNullable]
         public string ArticleName { get; set; }
 
@@ -16,7 +19,7 @@ namespace LightData.CMS.Modules.Library
         public bool Published { get; set; }
 
         [ForeignKey(typeof(Menus))]
-        public long MenusId { get; set; }
+        public System.Guid MenusId { get; set; }
 
         [IndependentData]
         public Menus Menus { get; set; }
@@ -24,14 +27,14 @@ namespace LightData.CMS.Modules.Library
         public List<ArticleNode> ArticleNodes { get; set; }
 
         [ForeignKey(typeof(Article))]
-        public long? ArticleId { get; set; }
+        public System.Guid? ArticleId { get; set; }
 
         // edited but not published yet
         public List<Article> ArticleTemp { get; set; }
 
         //Theme
         [ForeignKey(typeof(Folder))]
-        public long? Folder_Id { get; set; }
+        public System.Guid? Folder_Id { get; set; }
 
         public Folder Theme { get; set; }
     }

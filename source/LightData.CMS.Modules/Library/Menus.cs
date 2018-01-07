@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
 using EntityWorker.Core.Attributes;
-using EntityWorker.Core.Object.Library;
 
 namespace LightData.CMS.Modules.Library
 {
-    public class Menus : DbEntity
+    public class Menus
     {
+        [PrimaryKey]
+        public System.Guid Id { get; set; }
+
         [NotNullable]
 
         public string DisplayName { get; set; }
 
         [ForeignKey(typeof(Menus))]
-        public long? ParentId { get; set; }
+        public System.Guid? ParentId { get; set; }
 
         public List<Menus> Children { get; set; }
 
@@ -19,7 +21,7 @@ namespace LightData.CMS.Modules.Library
         public string Uri { get; set; }
 
         [ForeignKey(typeof(FileItem))]
-        public long? IconId { get; set; }
+        public System.Guid? IconId { get; set; }
 
         public FileItem Icon { get; set; }
 
@@ -28,7 +30,7 @@ namespace LightData.CMS.Modules.Library
         public string Description { get; set; }
 
         [ForeignKey(typeof(User))]
-        public long? CreatedBy { get; set; }
+        public System.Guid? CreatedBy { get; set; }
 
         public User CreatedByUser { get; set; }
     }
