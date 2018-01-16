@@ -4,7 +4,7 @@ using LightData.CMS.Modules.Interface;
 
 namespace LightData.CMS.Modules.Library.Internal
 {
-    public class EntityWorkerRepository : IEntityWorkerRepository
+    public class Reposiory : IRepsitory
     {
 
         private DataBaseTypes  _dbType { get; set; }
@@ -21,7 +21,7 @@ namespace LightData.CMS.Modules.Library.Internal
             }
         }
 
-        public EntityWorkerRepository(string dbType = "Mssql")
+        public Reposiory(string dbType = "Mssql")
         {
             _dbType = dbType.ConvertValue<DataBaseTypes>();
         }

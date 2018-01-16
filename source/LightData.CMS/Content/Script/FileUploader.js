@@ -40,6 +40,8 @@
             filePreview.html("");
             dg.find(".btnSave").unbind();
             dg.find(".enlarge").unbind();
+            dg.find(".delete,.zoomIn,.zoomOut,.enlarge,.btnSave").hide();
+
             dg.find(".delete,.zoomIn,.zoomOut,.enlarge,.btnSave").addClass("disabled");
 
         }
@@ -173,9 +175,11 @@
                             dataSource.shift();
                             dataSource.shift();
                         } else if (item.folderType === settings.fileTypes.ThemeContainer) {
-                            dataSource.splice(2, 1);
-                            dataSource.pop();
+                            dataSource = [];
                         }
+
+                        if (dataSource.length <= 0)
+                            return;
                         li.contextMenu({
                             dataSource: dataSource,
                             click: function (tItem) {
@@ -208,7 +212,7 @@
                                 else if (tItem.id === 1) {
                                     $("body").dialog({
                                         title: "Please Confirm",
-                                        content: "You will be deleting this folder and all its content, are you sure?",
+                                        content: "<p class='warning'>You will be deleting this folder and all its content, are you sure?</p>",
                                         saveText: "Yes",
                                         deleteText: "No",
                                         onSave: function (dialog) {
@@ -235,7 +239,7 @@
                                         onSave: function (dialog) {
                                             var newItem = { name: renameContainer.find("input").val(), parent_Id: tItem.item.id, children: [] }
                                             if (tItem.item.folderType == settings.fileTypes.ROOT) {
-                                                newItem.folderType = settings.fileTypes.ROOT;
+                                                newItem.folderType = settings.fileTypes.ThemeContainer;
                                                 newItem.children.push({ name: "CSS", folderType: settings.fileTypes.CSS });
                                                 newItem.children.push({ name: "JAVASCRIPT", folderType: settings.fileTypes.JAVASCRIPT });
                                                 newItem.children.push({ name: "MasterPage", folderType: settings.fileTypes.HtmlEmbedded });
@@ -387,7 +391,7 @@
                         else if (tItem.id === 1) {
                             $("body").dialog({
                                 title: "Please Confirm",
-                                content: "You will be deleting this file, are you sure?",
+                                content: "<p class='warning'>You will be deleting this file, are you sure?</p>",
                                 saveText: "Yes",
                                 deleteText: "No",
                                 onSave: function (dialog) {
@@ -455,7 +459,7 @@
                             img.click(function () {
                                 dg.find(".btnSave").unbind();
                                 dg.find(".enlarge").unbind();
-                                dg.find(".delete,.zoomIn,.zoomOut, .enlarge,.btnSave").removeClass("disabled");
+                                dg.find(".delete,.zoomIn,.zoomOut, .enlarge,.btnSave").show().removeClass("disabled");
                                 var editContainer = $("<div class='inputContainer'></div>");
                                 fileContainer.find(".selected").removeClass("selected");
                                 img.addClass("selected");
@@ -516,6 +520,8 @@
 
 
                                 } else if (item.folder.folderType === settings.fileTypes.Image) {
+                                    dg.find(".btnSave,.imageManager ").hide();
+                                    dg.find(".enlarge").hide();
                                     var tabControl = filePreview.tabs({
                                         onSelect: function () {
                                             var tab = tabControl.tab("Preview");
@@ -746,7 +752,7 @@
             } else {
                 container.prepend("<h2>Manage Themes <span class='imageManager' title='Image Manager'></span><span title='Enlarge' class='enlarge'></span><span title='Save Changes' class='btnSave'>Save</span></h2>");
                 dg = container.children("h2").first();
-                dg.find(".enlarge,.btnSave").addClass("disabled");
+                //dg.find(".enlarge,.btnSave").addClass("disabled");
                 $this.append(container);
                 container.children("h2").find(".imageManager").click(function () {
                     $("body").files({

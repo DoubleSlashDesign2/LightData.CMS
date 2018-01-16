@@ -68,7 +68,7 @@
             tabBasicValues.content.append("<label>Choose Menu:</label>");
             tabBasicValues.content.append("<input type='text' class='txtMenus' value='None' />");
             tabBasicValues.content.append("<label>Choose Theme:</label>");
-            tabBasicValues.content.append("<input type='text' class='txtTheme' selectedValue='" + (!item.folder_Id ? 0 : item.folder_Id) + "' value='" + (!item.folder_Id ? "None" : item.theme.name) + "' />");
+            tabBasicValues.content.append("<input type='text' class='txtTheme' selectedValue='" + (!item.folder_Id ? "" : item.folder_Id) + "' value='" + (!item.folder_Id ? "None" : item.theme.name) + "' />");
 
             tabBasicValues.content.find(".chkPublished").prop("checked", item.published && item.published === true);
             tabBasicValues.content.find(".txtMenus").autoFill({
@@ -117,7 +117,11 @@
                     var tagContent = $("<div><textarea style='width:100%; height:800px;'></textarea></div>");
                     var editor = undefined;
                     tagContent.find("textarea").val(tag.html());
+                    tagContent.find("textarea")[0].loadThemes = function (func) {
+                        return globalSettings.theme.load(tabBasicValues.content.find(".txtTheme").attr("selectedValue"), func);
+                    }
                     dialog.dialog({
+                        screen: true,
                         content: tagContent,
                         title: "Tag content",
                         onSave: function () {
@@ -146,8 +150,7 @@
                                     // The callback function to execute when the toolbar button is clicked
                                     action: function (btn) {
                                         // 'this' = jHtmlArea object
-                                        // 'btn' = jQuery object that represents the <a> ("anchor") tag for the toolbar button
-
+                                        // 'btn' = jQuery object that represents the <a> ("anchor") tag for the toolbar buttons
                                         var item = this;
                                         $("body").files({
                                             getUri: settings.getImageUri,
@@ -213,7 +216,8 @@
                 title: item.id > 0 ? "Edit/Delete" : "Add new",
                 onSave: function () {
                     //return container.save(item, editContainer);
-                }
+                },
+                screen: true
             });
             dialog.show();
         }

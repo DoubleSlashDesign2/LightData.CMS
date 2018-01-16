@@ -10,7 +10,7 @@ namespace LightData.CMS.Modules.Library
     public class Folder 
     {
         [PrimaryKey]
-        public System.Guid Id { get; set; }
+        public System.Guid? Id { get; set; }
 
         public string Name { get; set; }
 

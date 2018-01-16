@@ -6,7 +6,7 @@ namespace LightData.CMS.Modules.Library
     public class Address
     {
         [PrimaryKey]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         [NotNullable]
         public string Name { get; set; }

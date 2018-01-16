@@ -6,7 +6,7 @@ namespace LightData.CMS.Modules.Library
     public class Menus
     {
         [PrimaryKey]
-        public System.Guid Id { get; set; }
+        public System.Guid? Id { get; set; }
 
         [NotNullable]
 

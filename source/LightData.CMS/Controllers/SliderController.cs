@@ -4,6 +4,7 @@ using LightData.CMS.Modules.Library;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Linq;
+using System;
 
 namespace LightData.CMS.Controllers
 {
@@ -32,19 +33,16 @@ namespace LightData.CMS.Controllers
         }
 
         [HttpPost]
-        public void Delete(long itemId)
+        public void Delete(Guid itemId)
         {
-            var item = Repository.Get<SliderCollection>().Where(x => x.Id == itemId).IgnoreChildren(x => x.Sliders.Select(a => a.File), x => x.Sliders.Select(a => a.File.Slider), x => x.Sliders.Select(a => a.SliderCollection)).LoadChildren().Execute().First();
-            Repository.Delete(item);
-            Repository.SaveChanges();
+            Repository.Get<SliderCollection>().Where(x => x.Id == itemId).IgnoreChildren(x => x.Sliders.Select(a => a.File), x => x.Sliders.Select(a => a.File.Slider), x => x.Sliders.Select(a => a.SliderCollection)).LoadChildren().Remove().SaveChanges();
+
         }
 
         [HttpPost]
-        public void DeleteSlider(long itemId)
+        public void DeleteSlider(Guid itemId)
         {
-            var item = Repository.Get<Slider>().Where(x => x.Id == itemId).IgnoreChildren(x => x.File, x => x.SliderCollection).LoadChildren().Execute().First();
-            Repository.Delete(item);
-            Repository.SaveChanges();
+            Repository.Get<Slider>().Where(x => x.Id == itemId).Remove().SaveChanges();
         }
     }
 }

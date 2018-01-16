@@ -1,4 +1,5 @@
 ﻿using LightData.CMS.Modules.Library;
+using System;
 using System.Collections.Generic;
 
 namespace LightData.Auth.Settings
@@ -10,7 +11,7 @@ namespace LightData.Auth.Settings
 
         public static Getuser OnGetUser;
 
-        public delegate List<FileItem> GetFileItem(long fileId);
+        public delegate List<FileItem> GetFileItem(Guid fileId);
 
         public static GetFileItem GetFileById;
     }

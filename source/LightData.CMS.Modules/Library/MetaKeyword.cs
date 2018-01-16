@@ -7,7 +7,7 @@ namespace LightData.CMS.Modules.Library
     public class MetaKeyword
     {
         [PrimaryKey]
-        public System.Guid Id { get; set; }
+        public System.Guid? Id { get; set; }
 
         public string Key { get; set; }
 

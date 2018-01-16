@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using EntityWorker.Core.Helper;
-using LightData.Auth.Controllers;
 using LightData.Auth.Helper;
 using LightData.CMS.Controllers.Base;
 using LightData.CMS.Modules.Library;
@@ -29,7 +29,7 @@ namespace LightData.CMS.Controllers
         public async Task<ExternalActionResult> GetAutoFillData(string value)
         {
             var menus = new List<Menus>();
-            var id = value.ConvertValue<long?>();
+            var id = value?.ConvertValue<Guid?>();
             if (id.HasValue)
                 menus = await Repository.Get<Menus>().Where(x => x.Id == id).ExecuteAsync();
             else

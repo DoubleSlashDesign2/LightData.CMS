@@ -4,7 +4,7 @@ using System;
 
 namespace LightData.CMS.Modules.Interface
 {
-    public interface IEntityWorkerRepository : IDisposable
+    public interface IRepsitory : IDisposable
     {
         IRepository Repository { get; }
 

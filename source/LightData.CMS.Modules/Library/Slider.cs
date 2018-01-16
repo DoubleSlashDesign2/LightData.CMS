@@ -6,7 +6,7 @@ namespace LightData.CMS.Modules.Library
     public class Slider
     {
         [PrimaryKey]
-        public System.Guid Id { get; set; }
+        public System.Guid? Id { get; set; }
 
         [ForeignKey(typeof(FileItem))]
         public System.Guid FileItem_Id { get; set; }
@@ -19,5 +19,8 @@ namespace LightData.CMS.Modules.Library
 
         [IndependentData]
         public FileItem File { get; set; }
+
+        [DefaultOnEmpty(1)]
+        public int? Order { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using LightData.Auth.Helper;
@@ -87,7 +88,7 @@ namespace LightData.Auth.Controllers
             }
         }
 
-        public ActionResult LoadFiles(int fileId)
+        public ActionResult LoadFiles(Guid fileId)
         {
             var file = AuthSettings.GetFileById(fileId).First();
             var contentType = "text/css";

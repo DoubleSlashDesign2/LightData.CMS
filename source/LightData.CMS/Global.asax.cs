@@ -8,6 +8,7 @@ using LightData.CMS.Modules.Repository;
 using System.Web.Http;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using System;
 
 namespace LightData.CMS
 {
@@ -26,7 +27,7 @@ namespace LightData.CMS
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AuthSettings.GetFileById += (long fileId) =>
+            AuthSettings.GetFileById += (Guid fileId) =>
             {
                 using (var rep = new Repository())
                     return rep.Get<FileItem>().Where(x => x.Id == fileId).Execute();

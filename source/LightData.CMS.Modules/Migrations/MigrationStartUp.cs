@@ -50,7 +50,7 @@ namespace LightData.CMS.Modules.Migrations
             repository.Save(siteSettingCollection);
             var users = new List<User>();
             var i = 0;
-            while (i < 3000)
+            while (i != 1)
             {
                 users.AddRange(new List<User>()
             {

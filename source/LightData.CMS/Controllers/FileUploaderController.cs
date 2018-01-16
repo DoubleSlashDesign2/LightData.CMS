@@ -26,7 +26,7 @@ namespace LightData.CMS.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetImage(long id)
+        public ActionResult GetImage(Guid id)
         {
             var image = Repository.Get<FileItem>().Where(x => x.Id == id).Execute().First();
             return new FileStreamResult(new System.IO.MemoryStream(image.File), "image/" + image.FileType);
@@ -42,7 +42,7 @@ namespace LightData.CMS.Controllers
         [HttpPost]
         public ExternalActionResult GetFoldersAutoFill(string value)
         {
-            var folders = Repository.Get<Folder>().Where(x => !x.Parent_Id.HasValue && x.Children.Any(a=> a.Name.Contains(value))).LoadChildren().IgnoreChildren(x => x.Files).Execute().FirstOrDefault()?.Children;
+            var folders = Repository.Get<Folder>().Where(x => !x.Parent_Id.HasValue && x.Children.Any(a => a.Name.Contains(value))).LoadChildren().IgnoreChildren(x => x.Files).Execute().FirstOrDefault()?.Children;
             return folders.ToJsonResult();
         }
 
@@ -55,26 +55,47 @@ namespace LightData.CMS.Controllers
         }
 
         [HttpPost]
-        public void DeleteFolder(long folderId)
+        public void DeleteFolder(Guid folderId)
         {
             Repository.Get<Folder>().Where(x => x.Id == folderId).LoadChildren().IgnoreChildren(x => x.Files.Select(a => a.Folder)).Execute().ForEach(x => Repository.Delete(x));
             Repository.SaveChanges();
         }
 
         [HttpPost]
-        public async Task<ExternalActionResult> Get(int pageNr, long folderId)
+        public async Task<ExternalActionResult> Get(int pageNr, Guid folderId)
         {
-            var files = await Repository.Get<FileItem>()
+            var quary = Repository.Get<FileItem>()
                .Where(x => x.Folder_Id == folderId).Skip((pageNr - 1) * SearchResultValue)
                .Take(SearchResultValue)
                .OrderBy(x => x.FileName)
-               .LoadChildren(x => x.Folder).IgnoreChildren(x => x.Folder.Files)
-               .ExecuteAsync();
+               .LoadChildren(x => x.Folder).IgnoreChildren(x => x.Folder.Files);
+
+            var files = await quary.ExecuteAsync();
             return await files.ToJsonResultAsync();
         }
 
+        public ExternalActionResult GetTheme(Guid folderId)
+        {
+            var container = new { Css = new List<string>(), Js = new List<String>() };
+            void GetItems(Folder folder)
+            {
+                if (folder == null)
+                    return;
+                if (folder.FolderType == EnumHelper.FolderTypes.CSS)
+                    container.Css.AddRange(folder.Files.Select(x => Url.Action("LoadFiles", "FileUploader", new { }, Request.Url.Scheme) + "?fileId=" + x.Id));
+
+                if (folder.FolderType == EnumHelper.FolderTypes.JAVASCRIPT)
+                    container.Js.AddRange(folder.Files.Select(x => Url.Action("LoadFiles", "FileUploader", new { }, Request.Url.Scheme) + "?fileId=" + x.Id));
+                if (folder.Children.Any())
+                    folder.Children.ForEach(x => GetItems(x));
+            }
+
+            GetItems(Repository.Get<Folder>().Where(x => x.Id == folderId).LoadChildren().IgnoreChildren(x => x.Files.Select(a => a.Slider), x => x.Files.Select(a => a.Folder)).ExecuteFirstOrDefault());
+            return container.ToJsonResult();
+        }
+
         [HttpPost]
-        public void Delete(List<long> items)
+        public void Delete(List<Guid> items)
         {
             items.ForEach(a => Repository.Get<FileItem>().Where(x => x.Id == a).Remove());
             Repository.SaveChanges();
@@ -83,7 +104,7 @@ namespace LightData.CMS.Controllers
         [HttpPost]
         public void SaveFileItem(FileItem file)
         {
-            var item = file.Id > 0 ? Repository.Get<FileItem>().Where(x => x.Id == file.Id).Execute().First() : file;
+            var item = file.Id.HasValue ? Repository.Get<FileItem>().Where(x => x.Id == file.Id).Execute().First() : file;
             item.FileName = file.FileName;
             item.Folder_Id = file.Folder_Id;
             if ((file.FileType == EnumHelper.AllowedFiles.JAVASCRIPT || file.FileType == EnumHelper.AllowedFiles.CSS || file.FileType == EnumHelper.AllowedFiles.HtmlEmbedded))
@@ -91,7 +112,7 @@ namespace LightData.CMS.Controllers
                 if (file.FileType == EnumHelper.AllowedFiles.CSS)
                     item.ThumpFile = Convert.FromBase64String(cssIcon);
                 else if (item.FileType == EnumHelper.AllowedFiles.JAVASCRIPT)
-                         item.ThumpFile = Convert.FromBase64String(jsIcon);
+                    item.ThumpFile = Convert.FromBase64String(jsIcon);
                 else item.ThumpFile = Convert.FromBase64String(htmlIcon);
                 if (file.Text != null)
                 {
@@ -150,7 +171,7 @@ namespace LightData.CMS.Controllers
                                 Length = file.ContentLength,
                                 FileType = file.FileName.Split('.').ToList().Last().ToUpper().ConvertValue<EnumHelper.AllowedFiles>(),
                                 FileName = fname,
-                                Folder_Id = folderId.ConvertValue<long>(),
+                                Folder_Id = folderId.ConvertValue<Guid>(),
                                 ThumpFile = imgMem.ToArray(),
                                 Width = fullsizeImage.Width,
                                 Height = fullsizeImage.Height

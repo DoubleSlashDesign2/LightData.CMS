@@ -124,7 +124,7 @@
                 cancelText: "NO",
                 onSave: function () {
                     container.find(".chkPublished:checked, li.selected").each(function () {
-                        var itemId = eval($(this).attr("itemId"));
+                        var itemId = $(this).attr("itemId");
                         var o = $(this)
                         container.LightDataAjax({
                             contentType: "application/json",

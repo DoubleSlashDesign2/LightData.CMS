@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using LightData.Auth.Helper;
@@ -33,7 +34,7 @@ namespace LightData.CMS.Controllers
         }
 
         [HttpPost]
-        public void Delete(List<long> items)
+        public void Delete(List<Guid> items)
         {
             items.ForEach(a => Repository.Get<Article>().LoadChildren().Where(x => x.Id == a).Remove());
             Repository.SaveChanges();

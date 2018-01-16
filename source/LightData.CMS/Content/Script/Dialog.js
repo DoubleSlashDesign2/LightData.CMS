@@ -10,18 +10,21 @@
             content: undefined,
             title: undefined,
             autoFillDataUrl: undefined,
-            customButtons: []
+            customButtons: [],
+            screen: false
         }, options);
 
         var dialog = $("<div class='lightDataDialog'><h1>" + (settings.title ? settings.title : "&nbsp;") + "<span class='cancel'>X</span></h1><nav></nav></div>");
         var dim = undefined;
+        if (settings.screen)
+            dialog.css({ width: "99%", height: "99%" });
         dialog.settings = settings;
         if ($(".lightDataDialog").length > 0) {
             var max = 0;
             $(".lightDataDialog").each(function () {
                 max = Math.max(parseInt($(this).css("z-index")), max);
             });
-            dialog.css("zIndex", max +1);
+            dialog.css("zIndex", max + 1);
         }
 
         function dimScreen() {
@@ -32,19 +35,18 @@
                 $(".dim").each(function () {
                     max = Math.max(parseInt($(this).css("z-index")), max);
                 });
-                dim.css("zIndex", max+1);
+                dim.css("zIndex", max + 1);
             }
             return dim;
         }
 
         dialog.resize = function (bound) {
-
             setTimeout(function () {
                 dialog.center(true);
                 if (!bound)
                     dialog.find("h1").width(dialog[0].getBoundingClientRect().width);
                 else {
-                    dialog.find("h1").css("min-width", dialog[0].getBoundingClientRect().width);
+                    dialog.find("h1").css("max-width", dialog[0].getBoundingClientRect().width);
                     if (bound.width)
                         dialog.find("h1").css("width", bound.width);
                     if (bound.height)
@@ -64,7 +66,8 @@
             dim = dimScreen();
             dialog.find("nav").append(settings.content);
 
-            dialog.draggable({ handle: "h1" });
+            if (!settings.screen)
+                dialog.draggable({ handle: "h1" });
 
             dialog.find("span.cancel").click(function () {
                 dialog.remove();

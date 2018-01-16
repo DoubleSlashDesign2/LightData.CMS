@@ -15,19 +15,22 @@
     @Styles.Render("~/bundles/css")
     @Scripts.Render("~/bundles/jquery")
 
+    <script>
+        globalSettings.theme = $.themeLoader({ getUri: '@Url.Action("GetTheme", "FileUploader", new { }, this.Request.Url.Scheme)' });
+    </script>
 
-    @foreach (var file in new LightData.CMS.Modules.Repository.Repository().Get<LightData.CMS.Modules.Library.FileItem>().Where(x =>
-     x.FileType == LightData.CMS.Modules.Helper.EnumHelper.AllowedFiles.CSS || x.FileType == LightData.CMS.Modules.Helper.EnumHelper.AllowedFiles.JAVASCRIPT).Execute())
-    {
-        if (file.FileType.ToString() == "JAVASCRIPT")
+    @*@foreach (var file in new LightData.CMS.Modules.Repository.Repository().Get<LightData.CMS.Modules.Library.FileItem>().Where(x =>
+         x.FileType == LightData.CMS.Modules.Helper.EnumHelper.AllowedFiles.CSS || x.FileType == LightData.CMS.Modules.Helper.EnumHelper.AllowedFiles.JAVASCRIPT).Execute())
         {
-            <script type="text/javascript" src='@Url.Action("LoadFiles", "FileUploader", new { }, this.Request.Url.Scheme)?fileId=@file.Id'></script>
-        }
-        else
-        {
-            <link class="ExternalCss" href='@Url.Action("LoadFiles", "FileUploader", new { }, this.Request.Url.Scheme)?fileId=@file.Id' rel="stylesheet" />
-        }
-    }
+            if (file.FileType.ToString() == "JAVASCRIPT")
+            {
+                <script type="text/javascript" src='@Url.Action("LoadFiles", "FileUploader", new { }, this.Request.Url.Scheme)?fileId=@file.Id'></script>
+            }
+            else
+            {
+                <link class="ExternalCss" href='@Url.Action("LoadFiles", "FileUploader", new { }, this.Request.Url.Scheme)?fileId=@file.Id' rel="stylesheet" />
+            }
+        }*@
 
     <title>@ViewBag.Title</title>
 

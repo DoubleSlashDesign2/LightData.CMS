@@ -171,7 +171,7 @@
             editContainer.find(".chkPublished").prop("checked", item.publish && item.publish === true);
             editContainer.dialog({
                 content: editContainer,
-                title: item.id > 0 ? "Edit/Delete" : "Add new",
+                title: !isNullOrEmpty(item.id)> 0 ? "Edit/Delete" : "Add new",
                 onSave: function () {
                     return container.save(item, editContainer);
                 }
@@ -196,7 +196,7 @@
         container.save = function (item, editContainer) {
 
             if (!isNullOrEmpty(editContainer.find(".txtparent").attr("selectedValue")))
-                item.parentId = eval(editContainer.find(".txtparent").attr("selectedValue"));
+                item.parentId = editContainer.find(".txtparent").attr("selectedValue");
             else {
                 item.parentId = null;
             }
