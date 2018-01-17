@@ -10,7 +10,8 @@ namespace LightData.CMS.Modules.Repository
     {
         public Repository(DataBaseTypes dbType = DataBaseTypes.Mssql) : base(GetConnectionString(dbType), true, dbType)
         {
-
+            if (!base.DataBaseExist())
+                base.CreateDataBase();
         }
 
         // get the full connection string from the web-config
